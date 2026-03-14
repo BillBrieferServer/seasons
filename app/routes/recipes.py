@@ -810,6 +810,8 @@ async def fetch_page_content(url: str) -> dict:
             response = await client.get(url)
             response.raise_for_status()
     except httpx.HTTPStatusError as e:
+        if e.response.status_code == 403:
+            return {"error": "This site blocked the request (403 Forbidden). Some sites don't allow automated access. Try copying the recipe and using manual entry or PDF upload."}
         return {"error": f"Page returned error {e.response.status_code}"}
     except httpx.RequestError as e:
         return {"error": f"Could not load page: {str(e)}"}
