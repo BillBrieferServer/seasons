@@ -495,7 +495,7 @@ Rules:
   produce, dairy, meat, bakery, frozen, canned, grains, spices, oils, snacks, beverages, baking, condiments, other
 - For steps: extract each instruction as a separate string in order. If written as a paragraph, break it into logical steps.
 - For suggested_tags: suggest which of these dietary categories apply based on the recipe content:
-  heart-healthy, diabetic-friendly, anti-inflammatory, bone-health, digestive-wellness, soft-foods, high-protein, calorie-dense, low-sugar, low-sodium, general-healthy
+  heart-healthy, diabetic-friendly, anti-inflammatory, bone-health, digestive-wellness, soft-foods, high-protein, calorie-dense, low-sugar, low-sodium, general-healthy, freezer-friendly
 - For handwritten recipes: do your best to read the handwriting. If a word is unclear, make your best guess and note "[unclear]" in the notes field.
 - If the document contains multiple recipes, extract only the FIRST one and note in description that additional recipes were found.
 """
