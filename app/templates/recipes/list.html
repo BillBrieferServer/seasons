@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Recipe Library — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Recipe Library</h1>
+    <p class="subtitle">{{ total_count }} recipe{{ 's' if total_count != 1 else '' }} in your collection</p>
+</div>
+
+<!-- Search -->
+<form class="search-bar" method="get" action="/recipes">
+    <input type="text" name="q" placeholder="Search recipes..." value="{{ search_query }}" class="search-input">
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+    {% if search_query %}
+        <a href="/recipes" class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- Tag filters -->
+<div class="filter-bar">
+    <a href="/recipes{% if search_query %}?q={{ search_query }}{% endif %}"
+       class="filter-pill {% if not active_tag %}active{% endif %}">
+        All ({{ total_count }})
+    </a>
+    {% for tc in tag_counts %}
+        {% if tc.cnt > 0 %}
+        <a href="/recipes?tag={{ tc.name }}{% if search_query %}&amp;q={{ search_query }}{% endif %}"
+           class="filter-pill {% if active_tag == tc.name %}active{% endif %}"
+           style="{% if active_tag == tc.name %}background:{{ tc.color }};border-color:{{ tc.color }};color:#fff;{% else %}border-color:{{ tc.color }};color:{{ tc.color }};{% endif %}">
+            {{ tc.display_name }} ({{ tc.cnt }})
+        </a>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- Recipe grid -->
+{% if recipes %}
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+    <a href="/recipes/{{ recipe.id }}" class="recipe-card">
+        <h3 class="card-title">{{ recipe.title }}</h3>
+        <div class="card-meta">
+            {% if recipe.prep_time_minutes %}Prep {{ recipe.prep_time_minutes }}m{% endif %}
+            {% if recipe.cook_time_minutes %}{% if recipe.prep_time_minutes %} &middot; {% endif %}Cook {{ recipe.cook_time_minutes }}m{% endif %}
+            {% if recipe.base_servings %} &middot; {{ recipe.base_servings }} servings{% endif %}
+        </div>
+        {% if recipe.description %}
+        <p class="card-desc">{{ recipe.description }}</p>
+        {% endif %}
+        {% if recipe.tag_names %}
+        <div class="tag-row">
+            {% for i in range(recipe.tag_names.split('||')|length) %}
+            <span class="tag-badge" style="background:{{ recipe.tag_colors.split('||')[i] }}">
+                {{ recipe.tag_names.split('||')[i] }}
+            </span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    {% if search_query or active_tag %}
+        <p>No recipes match your search. Try different terms or clear your filters.</p>
+        <a href="/recipes" class="btn btn-outline">Show All Recipes</a>
+    {% else %}
+        <p>Your recipe library is empty. Time to add your first recipe!</p>
+        <a href="/recipes/add" class="btn btn-primary">Add Your First Recipe</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

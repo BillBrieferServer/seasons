@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}{{ recipe.title }} — Seasons{% endblock %}
+{% block content %}
+<div class="detail-header">
+    <h1>{{ recipe.title }}</h1>
+    {% if recipe.description %}
+    <p class="detail-desc">{{ recipe.description }}</p>
+    {% endif %}
+
+    <div class="detail-meta">
+        {% if recipe.prep_time_minutes %}
+        <span class="meta-item">Prep: {{ recipe.prep_time_minutes }} min</span>
+        {% endif %}
+        {% if recipe.cook_time_minutes %}
+        <span class="meta-item">Cook: {{ recipe.cook_time_minutes }} min</span>
+        {% endif %}
+        {% if recipe.prep_time_minutes and recipe.cook_time_minutes %}
+        <span class="meta-item">Total: {{ recipe.prep_time_minutes + recipe.cook_time_minutes }} min</span>
+        {% endif %}
+        <span class="meta-item">Servings: {{ recipe.base_servings }}</span>
+        {% if recipe.source %}
+        <span class="meta-item">Source: {{ recipe.source }}</span>
+        {% endif %}
+    </div>
+
+    {% if tags %}
+    <div class="tag-row" style="margin-top:0.75rem;">
+        {% for tag in tags %}
+        <span class="tag-badge" style="background:{{ tag.color }}">{{ tag.display_name }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if recipe.status == 'review' %}
+    <span class="status-badge status-review">In Review</span>
+    {% endif %}
+
+    <div class="detail-actions">
+        <a href="/recipes/{{ recipe.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
+        {% if recipe.status == 'review' %}
+        <form method="post" action="/recipes/{{ recipe.id }}/approve" style="display:inline">
+            <button type="submit" class="btn btn-approve btn-sm">Approve</button>
+        </form>
+        {% endif %}
+        <form method="post" action="/recipes/{{ recipe.id }}/delete" style="display:inline"
+              onsubmit="return confirm('Delete this recipe? This cannot be undone.')">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+    </div>
+</div>
+
+<div class="detail-body">
+    <div class="detail-ingredients">
+        <h2>Ingredients</h2>
+        {% if ingredients %}
+        <ul class="ingredient-list">
+            {% for ing in ingredients %}
+            <li>
+                {% if ing.amount %}
+                <span class="ing-amount">{{ ing.amount }}{% if ing.unit %} {{ ing.unit }}{% endif %}</span>
+                {% elif ing.unit %}
+                <span class="ing-amount">{{ ing.unit }}</span>
+                {% endif %}
+                {{ ing.name }}{% if ing.notes %} <span class="ing-note">— {{ ing.notes }}</span>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="muted">No ingredients listed.</p>
+        {% endif %}
+    </div>
+
+    <div class="detail-steps">
+        <h2>Instructions</h2>
+        {% if steps %}
+        <ol class="step-list">
+            {% for step in steps %}
+            <li>
+                <div class="step-circle">{{ step.step_number }}</div>
+                <div class="step-text">{{ step.instruction }}</div>
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <p class="muted">No instructions listed.</p>
+        {% endif %}
+
+        {% if recipe.notes %}
+        <div class="notes-section">
+            <h3>Notes</h3>
+            <p>{{ recipe.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="detail-footer">
+    <a href="/recipes">&larr; Back to Library</a>
+</div>
+{% endblock %}

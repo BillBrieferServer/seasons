@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Seasons Care Services{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="/recipes" class="nav-brand">Seasons</a>
+            <div class="nav-links">
+                <a href="/recipes" class="nav-link">Recipe Library</a>
+                <a href="/recipes/review" class="nav-link">
+                    Review Queue
+                    {% if review_count is defined and review_count > 0 %}
+                        <span class="nav-badge">{{ review_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="/recipes/add" class="btn btn-primary btn-sm">+ Add Recipe</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        Seasons Care Services &bull; Julie Brown &bull; Pocatello, Idaho
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

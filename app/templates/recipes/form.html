@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}{% if recipe %}Edit Recipe{% else %}Add Recipe{% endif %} — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{% if recipe %}Edit Recipe{% else %}Add New Recipe{% endif %}</h1>
+</div>
+
+<form method="post" action="{% if recipe %}/recipes/{{ recipe.id }}/edit{% else %}/recipes/add{% endif %}" class="recipe-form">
+    <!-- Basic Info -->
+    <div class="form-section">
+        <h2>Basic Info</h2>
+        <div class="form-row">
+            <div class="form-group full">
+                <label for="title">Recipe Title <span class="required">*</span></label>
+                <input type="text" id="title" name="title" required
+                       value="{{ recipe.title if recipe else '' }}"
+                       placeholder="e.g., Heart-Healthy Chicken Soup">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group full">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="2"
+                          placeholder="Brief description of the dish">{{ recipe.description if recipe and recipe.description else '' }}</textarea>
+            </div>
+        </div>
+        <div class="form-row four-col">
+            <div class="form-group">
+                <label for="base_servings">Servings</label>
+                <input type="number" id="base_servings" name="base_servings" min="1"
+                       value="{{ recipe.base_servings if recipe else 4 }}">
+            </div>
+            <div class="form-group">
+                <label for="prep_time_minutes">Prep (min)</label>
+                <input type="number" id="prep_time_minutes" name="prep_time_minutes" min="0"
+                       value="{{ recipe.prep_time_minutes if recipe and recipe.prep_time_minutes else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="cook_time_minutes">Cook (min)</label>
+                <input type="number" id="cook_time_minutes" name="cook_time_minutes" min="0"
+                       value="{{ recipe.cook_time_minutes if recipe and recipe.cook_time_minutes else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="source">Source</label>
+                <input type="text" id="source" name="source"
+                       value="{{ recipe.source if recipe and recipe.source else '' }}"
+                       placeholder="e.g., Julie's recipe">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group full">
+                <label for="source_url">Source URL <span class="optional">(optional)</span></label>
+                <input type="url" id="source_url" name="source_url"
+                       value="{{ recipe.source_url if recipe and recipe.source_url else '' }}"
+                       placeholder="https://...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Dietary Tags -->
+    <div class="form-section">
+        <h2>Dietary Tags</h2>
+        <div class="tag-picker">
+            {% for tag in all_tags %}
+            <label class="tag-pill-label" style="--tag-color:{{ tag.color }}">
+                <input type="checkbox" name="tags" value="{{ tag.id }}"
+                       {% if tag.id in selected_tag_ids %}checked{% endif %}>
+                <span class="tag-pill">{{ tag.display_name }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div class="form-section">
+        <h2>Ingredients</h2>
+        <div id="ingredients-list">
+            {% if ingredients %}
+                {% for ing in ingredients %}
+                <div class="ingredient-row">
+                    <input type="text" name="ing_name" placeholder="Ingredient" value="{{ ing.name }}" class="ing-name">
+                    <input type="text" name="ing_amount" placeholder="Amt" value="{{ ing.amount if ing.amount else '' }}" class="ing-amount-input">
+                    <input type="text" name="ing_unit" placeholder="Unit" value="{{ ing.unit if ing.unit else '' }}" class="ing-unit">
+                    <select name="ing_aisle" class="ing-aisle">
+                        {% for val, label in aisle_categories %}
+                        <option value="{{ val }}" {% if ing.aisle_category == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="ing_notes" placeholder="Notes" value="{{ ing.notes if ing.notes else '' }}" class="ing-notes">
+                    <button type="button" class="btn-remove" onclick="removeRow(this)">&times;</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="ingredient-row">
+                    <input type="text" name="ing_name" placeholder="Ingredient" class="ing-name">
+                    <input type="text" name="ing_amount" placeholder="Amt" class="ing-amount-input">
+                    <input type="text" name="ing_unit" placeholder="Unit" class="ing-unit">
+                    <select name="ing_aisle" class="ing-aisle">
+                        {% for val, label in aisle_categories %}
+                        <option value="{{ val }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="ing_notes" placeholder="Notes" class="ing-notes">
+                    <button type="button" class="btn-remove" onclick="removeRow(this)">&times;</button>
+                </div>
+            {% endif %}
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="addIngredient()">+ Add Ingredient</button>
+    </div>
+
+    <!-- Steps -->
+    <div class="form-section">
+        <h2>Instructions</h2>
+        <div id="steps-list">
+            {% if steps %}
+                {% for step in steps %}
+                <div class="step-row">
+                    <div class="step-num">{{ loop.index }}</div>
+                    <textarea name="step_instruction" rows="2" placeholder="Describe this step...">{{ step.instruction }}</textarea>
+                    <button type="button" class="btn-remove" onclick="removeStep(this)">&times;</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="step-row">
+                    <div class="step-num">1</div>
+                    <textarea name="step_instruction" rows="2" placeholder="Describe this step..."></textarea>
+                    <button type="button" class="btn-remove" onclick="removeStep(this)">&times;</button>
+                </div>
+            {% endif %}
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="addStep()">+ Add Step</button>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-section">
+        <h2>Notes</h2>
+        <textarea name="notes" rows="3" placeholder="Tips, variations, storage instructions...">{{ recipe.notes if recipe and recipe.notes else '' }}</textarea>
+    </div>
+
+    <!-- Status -->
+    <div class="form-section">
+        <h2>Status</h2>
+        <select name="status" class="status-select">
+            <option value="review" {% if not recipe or recipe.status == 'review' %}selected{% endif %}>In Review</option>
+            <option value="approved" {% if recipe and recipe.status == 'approved' %}selected{% endif %}>Approved</option>
+        </select>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Recipe</button>
+        <a href="{% if recipe %}/recipes/{{ recipe.id }}{% else %}/recipes{% endif %}" class="btn btn-outline">Cancel</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addIngredient() {
+    var list = document.getElementById('ingredients-list');
+    var row = list.querySelector('.ingredient-row').cloneNode(true);
+    var inputs = row.querySelectorAll('input');
+    for (var i = 0; i < inputs.length; i++) { inputs[i].value = ''; }
+    row.querySelector('select').selectedIndex = 0;
+    list.appendChild(row);
+}
+
+function addStep() {
+    var list = document.getElementById('steps-list');
+    var row = document.createElement('div');
+    row.className = 'step-row';
+    var num = list.querySelectorAll('.step-row').length + 1;
+    row.innerHTML = '<div class="step-num">' + num + '</div>' +
+        '<textarea name="step_instruction" rows="2" placeholder="Describe this step..."></textarea>' +
+        '<button type="button" class="btn-remove" onclick="removeStep(this)">&times;</button>';
+    list.appendChild(row);
+}
+
+function removeRow(btn) {
+    var list = btn.closest('#ingredients-list');
+    if (list && list.querySelectorAll('.ingredient-row').length > 1) {
+        btn.closest('.ingredient-row').remove();
+    }
+}
+
+function removeStep(btn) {
+    var list = document.getElementById('steps-list');
+    if (list.querySelectorAll('.step-row').length > 1) {
+        btn.closest('.step-row').remove();
+        renumberSteps();
+    }
+}
+
+function renumberSteps() {
+    var rows = document.querySelectorAll('#steps-list .step-row');
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].querySelector('.step-num').textContent = i + 1;
+    }
+}
+</script>
+{% endblock %}

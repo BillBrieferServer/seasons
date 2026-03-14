@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Review Queue — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Review Queue</h1>
+    <p class="subtitle">{{ review_count }} recipe{{ 's' if review_count != 1 else '' }} waiting for review</p>
+</div>
+
+{% if recipes %}
+<div class="review-list">
+    {% for recipe in recipes %}
+    <div class="review-row">
+        <div class="review-info">
+            <h3>{{ recipe.title }}</h3>
+            <div class="review-meta">
+                {% if recipe.source %}{{ recipe.source }} &middot; {% endif %}
+                {{ recipe.base_servings }} servings &middot; Added {{ recipe.created_at[:10] }}
+            </div>
+            {% if recipe.tag_names %}
+            <div class="tag-row">
+                {% for i in range(recipe.tag_names.split('||')|length) %}
+                <span class="tag-badge" style="background:{{ recipe.tag_colors.split('||')[i] }}">
+                    {{ recipe.tag_names.split('||')[i] }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="review-actions">
+            <a href="/recipes/{{ recipe.id }}" class="btn btn-outline btn-sm">View</a>
+            <a href="/recipes/{{ recipe.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
+            <form method="post" action="/recipes/{{ recipe.id }}/approve" style="display:inline">
+                <button type="submit" class="btn btn-approve btn-sm">Approve</button>
+            </form>
+            <form method="post" action="/recipes/{{ recipe.id }}/reject" style="display:inline"
+                  onsubmit="return confirm('Delete this recipe? This cannot be undone.')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>All clear! No recipes waiting for review. Nice work, Julie.</p>
+    <a href="/recipes" class="btn btn-outline">Back to Library</a>
+</div>
+{% endif %}
+{% endblock %}
