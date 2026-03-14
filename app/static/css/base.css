@@ -781,3 +781,65 @@ noscript .shop-item-form { display: inline; }
     .shop-header { flex-direction: column; align-items: flex-start; }
     .shopping-row { flex-direction: column; align-items: flex-start; }
 }
+
+/* ============================
+   PHASE 1A: PDF Upload
+   ============================ */
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+.alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+.alert-warning { background: #FFF3CD; color: #856404; border: 1px solid #ffeeba; }
+
+.upload-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    max-width: 600px;
+    margin: 0 auto;
+}
+.upload-zone {
+    border: 2.5px dashed var(--sage-light);
+    border-radius: var(--radius);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.upload-zone:hover, .upload-zone-hover { border-color: var(--terra); background: var(--terra-light); }
+.upload-icon { margin-bottom: 0.75rem; }
+.upload-text { font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 0.3rem; }
+.upload-hint { font-size: 0.82rem; color: var(--sage); }
+.file-input-hidden { display: none; }
+
+.file-list { margin: 1rem 0; }
+.file-item {
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--sage-light);
+    margin-bottom: 0.3rem;
+    font-size: 0.88rem;
+}
+.file-item.file-error { background: #fdecea; color: #c0392b; }
+.file-size { color: var(--sage); font-size: 0.78rem; }
+.file-err-msg { font-weight: 600; font-size: 0.78rem; }
+
+.upload-actions { margin-top: 1.2rem; text-align: center; }
+.upload-note { margin-top: 1rem; font-size: 0.82rem; color: var(--sage); text-align: center; }
+
+.pdf-badge {
+    display: inline-block;
+    background: var(--terra);
+    color: var(--white);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-right: 4px;
+    vertical-align: middle;
+}

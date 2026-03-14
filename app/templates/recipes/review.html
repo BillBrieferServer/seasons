@@ -6,6 +6,10 @@
     <p class="subtitle">{{ review_count }} recipe{{ 's' if review_count != 1 else '' }} waiting for review</p>
 </div>
 
+{% if flash_msg is defined and flash_msg %}
+<div class="alert alert-info">{{ flash_msg }}</div>
+{% endif %}
+
 {% if recipes %}
 <div class="review-list">
     {% for recipe in recipes %}
@@ -13,7 +17,7 @@
         <div class="review-info">
             <h3>{{ recipe.title }}</h3>
             <div class="review-meta">
-                {% if recipe.source %}{{ recipe.source }} &middot; {% endif %}
+                {% if recipe.source == 'PDF upload' %}<span class="pdf-badge">PDF</span> {% elif recipe.source %}{{ recipe.source }} &middot; {% endif %}
                 {{ recipe.base_servings }} servings &middot; Added {{ recipe.created_at[:10] }}
             </div>
             {% if recipe.tag_names %}

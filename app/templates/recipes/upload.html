@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Upload Recipes — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Upload Recipes from PDF</h1>
+    <p class="subtitle">Upload recipe PDFs and we'll extract the details automatically</p>
+</div>
+
+{% if not api_configured %}
+<div class="alert alert-warning">
+    PDF upload is not configured yet. Please contact Steve to set up the API key.
+</div>
+{% else %}
+<div class="upload-card">
+    <form method="post" action="/recipes/upload" enctype="multipart/form-data" id="upload-form">
+        <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="4" width="32" height="40" rx="4" stroke="#993A31" stroke-width="2.5" fill="none"/><path d="M16 20h16M16 26h16M16 32h10" stroke="#808D86" stroke-width="2" stroke-linecap="round"/><path d="M24 10v8M20 14l4-4 4 4" stroke="#993A31" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p class="upload-text">Drop your recipe PDFs here or click to browse</p>
+            <p class="upload-hint">PDF files only, up to 10MB each</p>
+            <input type="file" name="files" id="file-input" accept=".pdf" multiple class="file-input-hidden">
+        </div>
+
+        <div id="file-list" class="file-list" style="display:none"></div>
+
+        <div class="upload-actions">
+            <button type="submit" id="upload-btn" class="btn btn-primary" disabled>Upload &amp; Extract Recipes</button>
+        </div>
+    </form>
+
+    <p class="upload-note">Recipes will be sent to the Review Queue where you can check them for accuracy before approving.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+var zone = document.getElementById('upload-zone');
+var input = document.getElementById('file-input');
+var fileList = document.getElementById('file-list');
+var btn = document.getElementById('upload-btn');
+var form = document.getElementById('upload-form');
+
+if (zone) {
+    zone.addEventListener('click', function() { input.click(); });
+
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        zone.classList.add('upload-zone-hover');
+    });
+    zone.addEventListener('dragleave', function() {
+        zone.classList.remove('upload-zone-hover');
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        zone.classList.remove('upload-zone-hover');
+        input.files = e.dataTransfer.files;
+        showFiles();
+    });
+
+    input.addEventListener('change', showFiles);
+}
+
+function showFiles() {
+    var files = input.files;
+    if (!files.length) {
+        fileList.style.display = 'none';
+        btn.disabled = true;
+        return;
+    }
+
+    var html = '';
+    var valid = true;
+    for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var sizeMB = (f.size / 1024 / 1024).toFixed(1);
+        var icon = '&#128196;';
+        var cls = 'file-item';
+
+        if (!f.name.toLowerCase().endsWith('.pdf')) {
+            cls += ' file-error';
+            icon = '&#10060;';
+            valid = false;
+        } else if (f.size > 10 * 1024 * 1024) {
+            cls += ' file-error';
+            icon = '&#10060;';
+            valid = false;
+        }
+
+        html += '<div class="' + cls + '">' + icon + ' ' + f.name + ' <span class="file-size">(' + sizeMB + ' MB)</span>';
+        if (!f.name.toLowerCase().endsWith('.pdf')) {
+            html += ' <span class="file-err-msg">Not a PDF</span>';
+        } else if (f.size > 10 * 1024 * 1024) {
+            html += ' <span class="file-err-msg">Too large (max 10MB)</span>';
+        }
+        html += '</div>';
+    }
+
+    fileList.innerHTML = html;
+    fileList.style.display = 'block';
+    btn.disabled = !valid;
+}
+
+if (form) {
+    form.addEventListener('submit', function() {
+        btn.disabled = true;
+        btn.textContent = 'Extracting recipes... this may take a moment';
+        zone.style.display = 'none';
+    });
+}
+</script>
+{% endblock %}

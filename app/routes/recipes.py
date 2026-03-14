@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
+import os
+import json
+import base64
+import time
 from app.database.db import get_db
 from app.config import AISLE_CATEGORIES
 
@@ -82,7 +86,7 @@ async def recipe_library(request: Request, q: str = "", tag: str = ""):
 
 
 @router.get("/recipes/review", response_class=HTMLResponse)
-async def review_queue(request: Request):
+async def review_queue(request: Request, msg: str = ""):
     db = get_db()
     recipes = db.execute("""
         SELECT r.*, GROUP_CONCAT(dt.display_name, '||') as tag_names,
@@ -101,6 +105,7 @@ async def review_queue(request: Request):
         "request": request,
         "recipes": recipes,
         "review_count": review_count,
+        "flash_msg": msg,
     })
 
 
@@ -193,6 +198,82 @@ async def add_recipe(request: Request):
         db.close()
 
     return RedirectResponse(url="/recipes/" + str(recipe_id), status_code=303)
+
+
+@router.get("/recipes/upload", response_class=HTMLResponse)
+async def upload_form(request: Request):
+    db = get_db()
+    review_count = db.execute("SELECT COUNT(*) as cnt FROM recipes WHERE status='review'").fetchone()["cnt"]
+    db.close()
+    api_configured = bool(os.environ.get("ANTHROPIC_API_KEY"))
+
+    return templates.TemplateResponse("recipes/upload.html", {
+        "request": request,
+        "review_count": review_count,
+        "api_configured": api_configured,
+    })
+
+
+@router.post("/recipes/upload")
+async def upload_process(request: Request, files: List[UploadFile] = File(...)):
+    api_configured = bool(os.environ.get("ANTHROPIC_API_KEY"))
+    if not api_configured:
+        return RedirectResponse(url="/recipes/upload", status_code=303)
+
+    successes = []
+    failures = []
+
+    for f in files:
+        filename = f.filename or "unknown.pdf"
+
+        # Validate file type
+        if not filename.lower().endswith(".pdf"):
+            failures.append((filename, "Not a PDF file"))
+            continue
+
+        # Read bytes
+        pdf_bytes = await f.read()
+
+        # Validate size (10MB)
+        if len(pdf_bytes) > 10 * 1024 * 1024:
+            failures.append((filename, "File too large (max 10MB)"))
+            continue
+
+        if len(pdf_bytes) == 0:
+            failures.append((filename, "Empty file"))
+            continue
+
+        # Extract via Claude API
+        data = extract_recipe_from_pdf(pdf_bytes)
+
+        if "error" in data:
+            failures.append((filename, data["error"]))
+        else:
+            db = get_db()
+            try:
+                save_extracted_recipe(data, filename, db)
+                db.commit()
+                successes.append(filename)
+            except Exception as e:
+                failures.append((filename, "Database error: " + str(e)))
+            finally:
+                db.close()
+
+        # Brief delay between files
+        if len(files) > 1:
+            time.sleep(1)
+
+    # Build result message
+    parts = []
+    if successes:
+        parts.append("Extracted " + str(len(successes)) + " recipe" + ("s" if len(successes) != 1 else "") + " from PDFs.")
+    if failures:
+        fail_details = "; ".join(name + " (" + err + ")" for name, err in failures)
+        parts.append("Failed: " + fail_details)
+
+    msg = " ".join(parts) if parts else "No files processed."
+
+    return RedirectResponse(url="/recipes/review?msg=" + msg, status_code=303)
 
 
 @router.get("/recipes/{recipe_id}", response_class=HTMLResponse)
@@ -372,3 +453,156 @@ async def delete_recipe(request: Request, recipe_id: int):
     db.commit()
     db.close()
     return RedirectResponse(url="/recipes", status_code=303)
+
+
+# ========================================
+# PDF Upload & Claude API Extraction
+# ========================================
+
+EXTRACTION_PROMPT = """You are extracting a recipe from this document. The document may be typed or handwritten, portrait or landscape orientation. Extract ALL information you can find and return it as a JSON object.
+
+Return ONLY valid JSON with no other text, no markdown backticks, no explanation. Use this exact structure:
+
+{
+    "title": "Recipe title",
+    "description": "Brief 1-2 sentence description of the dish (write one if not explicitly stated)",
+    "base_servings": 4,
+    "prep_time_minutes": 15,
+    "cook_time_minutes": 30,
+    "notes": "Any tips, variations, or notes from the original recipe",
+    "ingredients": [
+        {
+            "name": "Ingredient name",
+            "amount": 1.5,
+            "unit": "cups",
+            "aisle_category": "produce",
+            "notes": "diced, optional modifier"
+        }
+    ],
+    "steps": [
+        "First instruction step",
+        "Second instruction step"
+    ],
+    "suggested_tags": ["heart-healthy", "low-sodium"]
+}
+
+Rules:
+- For base_servings: use the number stated in the recipe. If not stated, estimate based on ingredient quantities and default to 4.
+- For prep_time_minutes and cook_time_minutes: extract if stated, otherwise set to null.
+- For ingredient amounts: use decimal numbers (1.5, 0.25, etc). For "a pinch" or "to taste", set amount to null.
+- For ingredient units: use standard abbreviations — cups, tbsp, tsp, lbs, oz, whole, cloves, stalks, cans, etc. For countable items like "3 carrots", use "whole" as the unit.
+- For aisle_category: assign each ingredient to one of these exact categories:
+  produce, dairy, meat, bakery, frozen, canned, grains, spices, oils, snacks, beverages, baking, condiments, other
+- For steps: extract each instruction as a separate string in order. If written as a paragraph, break it into logical steps.
+- For suggested_tags: suggest which of these dietary categories apply based on the recipe content:
+  heart-healthy, diabetic-friendly, anti-inflammatory, bone-health, digestive-wellness, soft-foods, high-protein, calorie-dense, low-sugar, low-sodium, general-healthy
+- For handwritten recipes: do your best to read the handwriting. If a word is unclear, make your best guess and note "[unclear]" in the notes field.
+- If the document contains multiple recipes, extract only the FIRST one and note in description that additional recipes were found.
+"""
+
+
+def get_anthropic_client():
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        return None
+    import anthropic
+    return anthropic.Anthropic(api_key=api_key)
+
+
+def parse_recipe_json(response_text):
+    text = response_text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1]
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as e:
+        return {"error": "Could not parse extracted recipe: " + str(e), "raw_response": response_text[:500]}
+
+
+def extract_recipe_from_pdf(pdf_bytes):
+    client = get_anthropic_client()
+    if not client:
+        return {"error": "Claude API key not configured. Contact Steve."}
+
+    pdf_b64 = base64.standard_b64encode(pdf_bytes).decode("utf-8")
+
+    try:
+        message = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=4096,
+            messages=[{
+                "role": "user",
+                "content": [
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "base64",
+                            "media_type": "application/pdf",
+                            "data": pdf_b64,
+                        },
+                    },
+                    {
+                        "type": "text",
+                        "text": EXTRACTION_PROMPT,
+                    },
+                ],
+            }],
+        )
+        response_text = message.content[0].text
+        return parse_recipe_json(response_text)
+    except Exception as e:
+        return {"error": "API call failed: " + str(e)}
+
+
+def save_extracted_recipe(data, filename, db):
+    cursor = db.execute("""
+        INSERT INTO recipes (title, description, base_servings, prep_time_minutes,
+                            cook_time_minutes, source, source_url, notes, status)
+        VALUES (?, ?, ?, ?, ?, 'PDF upload', ?, ?, 'review')
+    """, (
+        data.get("title", "Untitled Recipe"),
+        data.get("description", ""),
+        data.get("base_servings", 4),
+        data.get("prep_time_minutes"),
+        data.get("cook_time_minutes"),
+        filename,
+        data.get("notes", ""),
+    ))
+    recipe_id = cursor.lastrowid
+
+    for i, ing in enumerate(data.get("ingredients", [])):
+        amount = ing.get("amount")
+        if amount is not None:
+            try:
+                amount = float(amount)
+            except (ValueError, TypeError):
+                amount = None
+        db.execute("""
+            INSERT INTO recipe_ingredients (recipe_id, name, amount, unit, aisle_category, sort_order, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            recipe_id,
+            ing.get("name", "Unknown ingredient"),
+            amount,
+            ing.get("unit", "") or None,
+            ing.get("aisle_category", "other"),
+            i,
+            ing.get("notes", "") or None,
+        ))
+
+    for i, step in enumerate(data.get("steps", [])):
+        db.execute("""
+            INSERT INTO recipe_steps (recipe_id, step_number, instruction)
+            VALUES (?, ?, ?)
+        """, (recipe_id, i + 1, step))
+
+    for tag_name in data.get("suggested_tags", []):
+        tag = db.execute("SELECT id FROM dietary_tags WHERE name = ?", (tag_name,)).fetchone()
+        if tag:
+            db.execute("INSERT OR IGNORE INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)",
+                       (recipe_id, tag["id"]))
+
+    return recipe_id
