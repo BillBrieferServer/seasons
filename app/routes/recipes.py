@@ -805,7 +805,7 @@ async def fetch_page_content(url: str) -> dict:
         async with httpx.AsyncClient(
             follow_redirects=True,
             timeout=30.0,
-            headers={"User-Agent": "Mozilla/5.0 (compatible; SeasonsRecipeImporter/1.0)"}
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
         ) as client:
             response = await client.get(url)
             response.raise_for_status()
@@ -834,7 +834,8 @@ async def fetch_page_content(url: str) -> dict:
     for tag in soup.find_all(["script", "style", "nav", "header", "footer", "aside", "iframe", "noscript"]):
         tag.decompose()
 
-    body = soup.find("body")
+    main_el = soup.find("main") or soup.find("article") or soup.select_one("[role=main]")
+    body = main_el if main_el else soup.find("body")
     text_content = body.get_text(separator="\n", strip=True) if body else soup.get_text(separator="\n", strip=True)
 
     if len(text_content) > 50000:
