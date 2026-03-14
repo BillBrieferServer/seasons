@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Meal Plans — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Meal Plans</h1>
+    <p class="subtitle">{{ plans|length }} plan{{ 's' if plans|length != 1 else '' }}</p>
+</div>
+
+<!-- New Plan Form -->
+<div class="new-plan-card">
+    <form method="post" action="/plans/new" class="new-plan-form">
+        <div class="form-group">
+            <label for="name">Plan Name</label>
+            <input type="text" id="name" name="name" required
+                   placeholder="e.g., Mrs. Henderson — Week of March 17">
+        </div>
+        <div class="form-group">
+            <label for="week_start">Week Starting</label>
+            <input type="date" id="week_start" name="week_start" value="{{ default_date }}">
+        </div>
+        <button type="submit" class="btn btn-primary">+ New Plan</button>
+    </form>
+</div>
+
+{% if plans %}
+<div class="plan-list">
+    {% for plan in plans %}
+    <div class="plan-row">
+        <div class="plan-info">
+            <h3><a href="/plans/{{ plan.id }}">{{ plan.name or 'Untitled Plan' }}</a></h3>
+            <div class="plan-meta">
+                {% if plan.week_start %}Week of {{ plan.week_start }} &middot; {% endif %}
+                {{ plan.meal_count }} meal{{ 's' if plan.meal_count != 1 else '' }} &middot;
+                {{ plan.total_servings }} total servings &middot;
+                Created {{ plan.created_at[:10] }}
+            </div>
+        </div>
+        <div class="plan-actions">
+            <a href="/plans/{{ plan.id }}" class="btn btn-primary btn-sm">View / Edit</a>
+            <form method="post" action="/plans/{{ plan.id }}/duplicate" style="display:inline">
+                <button type="submit" class="btn btn-outline btn-sm">Duplicate</button>
+            </form>
+            <form method="post" action="/plans/{{ plan.id }}/delete" style="display:inline"
+                  onsubmit="return confirm('Delete this meal plan and all its items?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No meal plans yet. Create your first plan to start building menus for your clients.</p>
+</div>
+{% endif %}
+{% endblock %}

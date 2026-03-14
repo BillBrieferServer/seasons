@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}{{ plan.name or 'Meal Plan' }} — Seasons{% endblock %}
+{% block content %}
+<!-- Plan Header -->
+<div class="plan-header-card">
+    <div class="plan-header-top">
+        <div>
+            <h1>{{ plan.name or 'Untitled Plan' }}</h1>
+            <p class="plan-header-meta">
+                {% if plan.week_start %}Week of {{ plan.week_start }} &middot; {% endif %}
+                {{ total_meals }} meal{{ 's' if total_meals != 1 else '' }} &middot;
+                {{ total_servings }} total servings
+            </p>
+        </div>
+        <div class="plan-header-actions">
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('edit-plan-modal').style.display='flex'">Edit Plan</button>
+            <form method="post" action="/plans/{{ plan.id }}/duplicate" style="display:inline">
+                <button type="submit" class="btn btn-outline btn-sm">Duplicate</button>
+            </form>
+            <form method="post" action="/plans/{{ plan.id }}/delete" style="display:inline"
+                  onsubmit="return confirm('Delete this meal plan and all its items?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Plan Modal -->
+<div id="edit-plan-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+    <div class="modal-card">
+        <h2>Edit Plan</h2>
+        <form method="post" action="/plans/{{ plan.id }}/edit">
+            <div class="form-group" style="margin-bottom:0.75rem">
+                <label for="edit-name">Plan Name</label>
+                <input type="text" id="edit-name" name="name" value="{{ plan.name or '' }}" required>
+            </div>
+            <div class="form-group" style="margin-bottom:0.75rem">
+                <label for="edit-date">Week Starting</label>
+                <input type="date" id="edit-date" name="week_start" value="{{ plan.week_start or '' }}">
+            </div>
+            <div style="display:flex;gap:0.5rem">
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('edit-plan-modal').style.display='none'">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Two Panel Layout -->
+<div class="planner-layout">
+    <!-- Left Panel: Recipe Browser -->
+    <div class="planner-browser">
+        <h2>Browse Recipes</h2>
+        <form method="get" action="/plans/{{ plan.id }}" class="browser-search">
+            <input type="text" name="q" placeholder="Search recipes..." value="{{ search_query }}" class="search-input">
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+            {% if search_query %}
+                <a href="/plans/{{ plan.id }}{% if active_tag %}?tag={{ active_tag }}{% endif %}" class="btn btn-outline btn-sm">Clear</a>
+            {% endif %}
+        </form>
+
+        <!-- Tag filters -->
+        <div class="filter-bar">
+            <a href="/plans/{{ plan.id }}{% if search_query %}?q={{ search_query }}{% endif %}"
+               class="filter-pill {% if not active_tag %}active{% endif %}">All</a>
+            {% for tc in tag_counts %}
+                {% if tc.cnt > 0 %}
+                <a href="/plans/{{ plan.id }}?tag={{ tc.name }}{% if search_query %}&amp;q={{ search_query }}{% endif %}"
+                   class="filter-pill {% if active_tag == tc.name %}active{% endif %}"
+                   style="{% if active_tag == tc.name %}background:{{ tc.color }};border-color:{{ tc.color }};color:#fff;{% else %}border-color:{{ tc.color }};color:{{ tc.color }};{% endif %}">
+                    {{ tc.display_name }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Recipe list -->
+        <div class="browser-recipes">
+            {% if recipes %}
+                {% for recipe in recipes %}
+                <div class="browser-card">
+                    <div class="browser-card-info">
+                        <h4>{{ recipe.title }}</h4>
+                        <div class="browser-card-meta">
+                            {{ recipe.base_servings }} servings
+                            {% if recipe.prep_time_minutes or recipe.cook_time_minutes %}
+                                &middot;
+                                {% if recipe.prep_time_minutes and recipe.cook_time_minutes %}
+                                    {{ recipe.prep_time_minutes + recipe.cook_time_minutes }} min
+                                {% elif recipe.prep_time_minutes %}
+                                    {{ recipe.prep_time_minutes }} min prep
+                                {% else %}
+                                    {{ recipe.cook_time_minutes }} min cook
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if recipe.tag_names %}
+                        <div class="tag-row">
+                            {% for i in range(recipe.tag_names.split('||')|length) %}
+                            <span class="tag-badge" style="background:{{ recipe.tag_colors.split('||')[i] }}">{{ recipe.tag_names.split('||')[i] }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <form method="post" action="/plans/{{ plan.id }}/add-recipe">
+                        <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+                        <input type="hidden" name="q" value="{{ search_query }}">
+                        <input type="hidden" name="tag" value="{{ active_tag }}">
+                        <button type="submit" class="btn btn-add">Add to Plan</button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted" style="text-align:center;padding:1.5rem;">No recipes found. {% if search_query or active_tag %}Try different filters.{% else %}Add some recipes first.{% endif %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Panel: Meal Plan -->
+    <div class="planner-plan">
+        <h2>Meal Plan</h2>
+
+        {% for day_idx in range(7) %}
+        <div class="day-group">
+            <div class="day-header">{{ day_names[day_idx] }}</div>
+            {% if days[day_idx] %}
+                {% for item in days[day_idx] %}
+                <div class="plan-item meal-{{ item.meal_type }}">
+                    <div class="plan-item-info">
+                        <a href="/recipes/{{ item.recipe_id }}" target="_blank" class="plan-item-title">{{ item.title }}</a>
+                    </div>
+                    <form method="post" action="/plans/{{ plan.id }}/update-item/{{ item.id }}" class="plan-item-controls">
+                        <select name="day_of_week" onchange="this.form.submit()">
+                            {% for d in range(7) %}
+                            <option value="{{ d }}" {% if item.day_of_week == d %}selected{% endif %}>{{ day_names[d][:3] }}</option>
+                            {% endfor %}
+                            <option value="null" {% if item.day_of_week is none %}selected{% endif %}>—</option>
+                        </select>
+                        <select name="meal_type" onchange="this.form.submit()">
+                            {% for mt in meal_types %}
+                            <option value="{{ mt }}" {% if item.meal_type == mt %}selected{% endif %}>{{ mt|capitalize }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="servings" value="{{ item.servings }}" min="1" max="8" class="servings-input" onchange="this.form.submit()">
+                    </form>
+                    <form method="post" action="/plans/{{ plan.id }}/remove-item/{{ item.id }}" style="display:inline">
+                        <button type="submit" class="btn-remove">&times;</button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="day-empty">No meals planned</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Unassigned -->
+        <div class="day-group unassigned-group">
+            <div class="day-header day-header-unassigned">Unassigned</div>
+            {% if days[None] %}
+                {% for item in days[None] %}
+                <div class="plan-item meal-{{ item.meal_type }}">
+                    <div class="plan-item-info">
+                        <a href="/recipes/{{ item.recipe_id }}" target="_blank" class="plan-item-title">{{ item.title }}</a>
+                    </div>
+                    <form method="post" action="/plans/{{ plan.id }}/update-item/{{ item.id }}" class="plan-item-controls">
+                        <select name="day_of_week" onchange="this.form.submit()">
+                            {% for d in range(7) %}
+                            <option value="{{ d }}" {% if item.day_of_week == d %}selected{% endif %}>{{ day_names[d][:3] }}</option>
+                            {% endfor %}
+                            <option value="null" {% if item.day_of_week is none %}selected{% endif %}>—</option>
+                        </select>
+                        <select name="meal_type" onchange="this.form.submit()">
+                            {% for mt in meal_types %}
+                            <option value="{{ mt }}" {% if item.meal_type == mt %}selected{% endif %}>{{ mt|capitalize }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="servings" value="{{ item.servings }}" min="1" max="8" class="servings-input" onchange="this.form.submit()">
+                    </form>
+                    <form method="post" action="/plans/{{ plan.id }}/remove-item/{{ item.id }}" style="display:inline">
+                        <button type="submit" class="btn-remove">&times;</button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="day-empty">No unassigned meals</div>
+            {% endif %}
+        </div>
+
+        <!-- Shopping List Button -->
+        <div class="plan-footer-actions">
+            <button class="btn btn-shopping" disabled title="Coming in Phase 3">
+                Generate Shopping List &rarr; <span class="coming-soon">(Coming soon)</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="detail-footer">
+    <a href="/plans">&larr; Back to Plans</a>
+</div>
+{% endblock %}
