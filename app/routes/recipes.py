@@ -276,8 +276,6 @@ async def upload_process(request: Request, files: List[UploadFile] = File(...)):
     return RedirectResponse(url="/recipes/review?msg=" + msg, status_code=303)
 
 
-@router.get("/recipes/{recipe_id}", response_class=HTMLResponse)
-
 
 @router.get("/recipes/import-url", response_class=HTMLResponse)
 async def import_url_form(request: Request):
@@ -366,6 +364,7 @@ async def import_url_process(request: Request):
 
     return RedirectResponse(url="/recipes/review?msg=" + msg, status_code=303)
 
+@router.get("/recipes/{recipe_id}", response_class=HTMLResponse)
 async def recipe_detail(request: Request, recipe_id: int):
     db = get_db()
     recipe = db.execute("SELECT * FROM recipes WHERE id = ?", (recipe_id,)).fetchone()
