@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Shopping List — Seasons{% endblock %}
+{% block content %}
+<div class="shop-header">
+    <div class="shop-header-info">
+        <h1>{{ slist.plan_name or 'Shopping List' }}</h1>
+        <p class="shop-header-meta">
+            {% if slist.week_start %}Week of {{ slist.week_start }} &middot; {% endif %}
+            {{ total }} item{{ 's' if total != 1 else '' }} &middot; {{ checked }} checked
+        </p>
+    </div>
+    <div class="shop-header-actions no-print">
+        <a href="/shopping/{{ slist.id }}/print" class="btn btn-outline btn-sm" target="_blank">Print</a>
+        <form method="post" action="/shopping/{{ slist.id }}/regenerate" style="display:inline"
+              onsubmit="return confirm('Regenerate this list from the meal plan? All check marks will be reset.')">
+            <button type="submit" class="btn btn-outline btn-sm">Regenerate</button>
+        </form>
+        <form method="post" action="/shopping/{{ slist.id }}/uncheck-all" style="display:inline"
+              onsubmit="return confirm('Uncheck all items?')">
+            <button type="submit" class="btn btn-outline btn-sm">Reset</button>
+        </form>
+    </div>
+</div>
+
+<!-- Progress bar -->
+<div class="progress-wrap no-print">
+    <div class="progress-bar">
+        <div class="progress-fill {% if pct == 100 %}progress-complete{% endif %}" style="width:{{ pct }}%"></div>
+    </div>
+    <span class="progress-label">{{ pct }}%</span>
+</div>
+
+<!-- Aisle sections -->
+{% for aisle in aisles %}
+<div class="aisle-section">
+    <div class="aisle-header">
+        <span class="aisle-name">{{ aisle.label }} <span class="aisle-count">({{ aisle.count }})</span></span>
+        {% if aisle.unchecked_count > 0 %}
+        <form method="post" action="/shopping/{{ slist.id }}/check-all" class="no-print" style="display:inline">
+            <input type="hidden" name="aisle_category" value="{{ aisle.key }}">
+            <button type="submit" class="btn-check-all">Check All</button>
+        </form>
+        {% endif %}
+    </div>
+    {% for item in aisle.items %}
+    <div class="shop-item {% if item.checked %}shop-item-checked{% endif %}"
+         onclick="toggleItem({{ slist.id }}, {{ item.id }}, this)">
+        <div class="shop-checkbox">
+            {% if item.checked %}
+            <svg width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="18" height="18" rx="3" fill="#993A31" stroke="#993A31" stroke-width="1.5"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {% else %}
+            <svg width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="18" height="18" rx="3" fill="none" stroke="#808D86" stroke-width="1.5"/></svg>
+            {% endif %}
+        </div>
+        <div class="shop-item-text">
+            {% if format_amount(item.amount) %}
+            <span class="shop-amount">{{ format_amount(item.amount) }}{% if item.unit %} {{ item.unit }}{% endif %}</span>
+            {% elif item.unit %}
+            <span class="shop-amount">{{ item.unit }}</span>
+            {% endif %}
+            <span class="shop-name">{{ item.ingredient_name }}</span>
+        </div>
+        <!-- Fallback form for no-JS -->
+        <form method="post" action="/shopping/{{ slist.id }}/check/{{ item.id }}" class="shop-item-form" onclick="event.stopPropagation()">
+            <noscript><button type="submit" class="btn-check-fallback">Toggle</button></noscript>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+<div class="detail-footer no-print">
+    {% if slist.plan_id %}
+    <a href="/plans/{{ slist.plan_id }}">&larr; Back to Plan</a>
+    <span style="margin:0 0.5rem">&middot;</span>
+    {% endif %}
+    <a href="/shopping">&larr; Shopping Lists</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleItem(listId, itemId, row) {
+    // Optimistic UI
+    var isChecked = row.classList.contains('shop-item-checked');
+    row.classList.toggle('shop-item-checked');
+
+    fetch('/shopping/' + listId + '/check/' + itemId, {
+        method: 'POST',
+        headers: {'Accept': 'application/json'}
+    }).then(function(r) {
+        if (!r.ok) { row.classList.toggle('shop-item-checked'); }
+        else { location.reload(); }
+    }).catch(function() {
+        row.classList.toggle('shop-item-checked');
+    });
+}
+</script>
+{% endblock %}

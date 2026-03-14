@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Shopping Lists — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Shopping Lists</h1>
+    <p class="subtitle">Generated from your meal plans</p>
+</div>
+
+{% if lists %}
+<div class="shopping-list-index">
+    {% for sl in lists %}
+    <div class="shopping-row">
+        <div class="shopping-row-info">
+            <h3><a href="/shopping/{{ sl.id }}">{{ sl.plan_name or 'Untitled Plan' }}</a></h3>
+            <div class="shopping-row-meta">
+                {% if sl.week_start %}Week of {{ sl.week_start }} &middot; {% endif %}
+                {{ sl.item_count }} item{{ 's' if sl.item_count != 1 else '' }} &middot;
+                {{ sl.checked_count }} checked &middot;
+                Created {{ sl.created_at[:10] }}
+            </div>
+            {% if sl.item_count > 0 %}
+            <div class="progress-bar-sm">
+                <div class="progress-fill-sm" style="width:{{ (sl.checked_count / sl.item_count * 100)|int if sl.item_count > 0 else 0 }}%"></div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="shopping-row-actions">
+            <a href="/shopping/{{ sl.id }}" class="btn btn-primary btn-sm">View</a>
+            <a href="/shopping/{{ sl.id }}/print" class="btn btn-outline btn-sm" target="_blank">Print</a>
+            <form method="post" action="/shopping/{{ sl.id }}/delete" style="display:inline"
+                  onsubmit="return confirm('Delete this shopping list?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No shopping lists yet. Generate one from a meal plan.</p>
+    <a href="/plans" class="btn btn-outline">Go to Meal Plans</a>
+</div>
+{% endif %}
+{% endblock %}

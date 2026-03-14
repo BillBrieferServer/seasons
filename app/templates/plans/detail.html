@@ -189,9 +189,15 @@
 
         <!-- Shopping List Button -->
         <div class="plan-footer-actions">
-            <button class="btn btn-shopping" disabled title="Coming in Phase 3">
-                Generate Shopping List &rarr; <span class="coming-soon">(Coming soon)</span>
+            {% if total_meals > 0 %}
+            <form method="post" action="/plans/{{ plan.id }}/generate-list">
+                <button type="submit" class="btn btn-shopping-active">Generate Shopping List &rarr;</button>
+            </form>
+            {% else %}
+            <button class="btn btn-shopping" disabled title="Add some recipes to the plan first">
+                Generate Shopping List &rarr; <span class="coming-soon">(Add recipes first)</span>
             </button>
+            {% endif %}
         </div>
     </div>
 </div>
