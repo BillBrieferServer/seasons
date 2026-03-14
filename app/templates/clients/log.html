@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Log Meal — {{ client.first_name }} {{ client.last_name }} — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Log Meal</h1>
+    <p class="subtitle">for {{ client.first_name }} {{ client.last_name }}</p>
+</div>
+
+<form method="post" action="/clients/{{ client.id }}/log" class="form-card" id="log-form">
+    <div class="form-group">
+        <label for="delivery_date">Date</label>
+        <input type="date" id="delivery_date" name="delivery_date" value="{{ today }}">
+    </div>
+
+    <div id="meal-rows">
+        <div class="meal-row" data-row="0">
+            <div class="meal-row-header">
+                <h3>Meal 1</h3>
+            </div>
+            <div class="form-group">
+                <label>Recipe <span class="required">*</span></label>
+                <input type="text" class="recipe-search" placeholder="Search recipes…" autocomplete="off" data-row="0">
+                <select name="recipe_id" class="recipe-select" data-row="0" required>
+                    <option value="">— Select a recipe —</option>
+                    {% for r in recipes %}
+                    <option value="{{ r.id }}" {{ 'selected' if prefill_recipe_id and r.id == prefill_recipe_id else '' }}>{{ r.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-row-inline">
+                <div class="form-group form-group-sm">
+                    <label>Servings</label>
+                    <input type="number" name="servings" min="1" max="20" value="{{ prefill_servings }}">
+                </div>
+                <div class="form-group form-group-grow">
+                    <label>Notes</label>
+                    <input type="text" name="delivery_notes" placeholder="She really loved this one…">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-outline" id="add-meal-btn">+ Add Another Meal</button>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Meals</button>
+        <a href="/clients/{{ client.id }}" class="btn btn-outline">Cancel</a>
+    </div>
+</form>
+
+{% block scripts %}
+<script>
+const allRecipes = [
+    {% for r in recipes %}
+    { id: {{ r.id }}, title: "{{ r.title|e }}" },
+    {% endfor %}
+];
+
+let rowCount = 1;
+
+document.getElementById('add-meal-btn').addEventListener('click', function() {
+    const container = document.getElementById('meal-rows');
+    const row = document.createElement('div');
+    row.className = 'meal-row';
+    row.dataset.row = rowCount;
+    row.innerHTML = `
+        <div class="meal-row-header">
+            <h3>Meal ${rowCount + 1}</h3>
+            <button type="button" class="btn-x" onclick="this.closest('.meal-row').remove()">&times;</button>
+        </div>
+        <div class="form-group">
+            <label>Recipe <span class="required">*</span></label>
+            <input type="text" class="recipe-search" placeholder="Search recipes…" autocomplete="off" data-row="${rowCount}">
+            <select name="recipe_id" class="recipe-select" data-row="${rowCount}" required>
+                <option value="">— Select a recipe —</option>
+                ${allRecipes.map(r => `<option value="${r.id}">${r.title}</option>`).join('')}
+            </select>
+        </div>
+        <div class="form-row-inline">
+            <div class="form-group form-group-sm">
+                <label>Servings</label>
+                <input type="number" name="servings" min="1" max="20" value="1">
+            </div>
+            <div class="form-group form-group-grow">
+                <label>Notes</label>
+                <input type="text" name="delivery_notes" placeholder="Optional note…">
+            </div>
+        </div>
+    `;
+    container.appendChild(row);
+    rowCount++;
+    bindSearchFields();
+});
+
+function bindSearchFields() {
+    document.querySelectorAll('.recipe-search').forEach(input => {
+        if (input.dataset.bound) return;
+        input.dataset.bound = '1';
+
+        const rowIdx = input.dataset.row;
+        const select = document.querySelector(`.recipe-select[data-row="${rowIdx}"]`);
+
+        input.addEventListener('input', function() {
+            const q = this.value.toLowerCase();
+            let firstMatch = null;
+            for (const opt of select.options) {
+                if (!opt.value) continue;
+                const match = opt.text.toLowerCase().includes(q);
+                opt.style.display = match || !q ? '' : 'none';
+                if (match && !firstMatch) firstMatch = opt;
+            }
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const q = this.value.toLowerCase();
+                for (const opt of select.options) {
+                    if (!opt.value) continue;
+                    if (opt.text.toLowerCase().includes(q)) {
+                        select.value = opt.value;
+                        break;
+                    }
+                }
+            }
+        });
+
+        select.addEventListener('change', function() {
+            const opt = this.options[this.selectedIndex];
+            if (opt && opt.value) input.value = opt.text;
+        });
+    });
+}
+
+// Init search on first row
+bindSearchFields();
+
+// If prefilled, set the search field text
+{% if prefill_recipe_id %}
+(function() {
+    const sel = document.querySelector('.recipe-select[data-row="0"]');
+    const search = document.querySelector('.recipe-search[data-row="0"]');
+    if (sel.value && search) {
+        search.value = sel.options[sel.selectedIndex].text;
+    }
+})();
+{% endif %}
+</script>
+{% endblock %}
+{% endblock %}

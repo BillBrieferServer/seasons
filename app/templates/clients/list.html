@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Clients — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-row">
+        <div>
+            <h1>Clients</h1>
+            <p class="subtitle">{{ client_count }} active client{{ 's' if client_count != 1 else '' }}</p>
+        </div>
+        <a href="/clients/add" class="btn btn-primary">+ Add Client</a>
+    </div>
+</div>
+
+{% if clients %}
+<div class="client-list">
+    {% for client in clients %}
+    <div class="client-card">
+        <div class="client-card-main">
+            <h3 class="client-name">
+                <a href="/clients/{{ client.id }}">{{ client.first_name }} {{ client.last_name }}</a>
+            </h3>
+            {% if client.tag_names %}
+            <div class="tag-row">
+                {% for i in range(client.tag_names.split('||')|length) %}
+                <span class="tag-badge" style="background:{{ client.tag_colors.split('||')[i] }}">
+                    {{ client.tag_names.split('||')[i] }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if client.dietary_notes %}
+            <p class="client-notes">{{ client.dietary_notes[:80] }}{% if client.dietary_notes|length > 80 %}…{% endif %}</p>
+            {% endif %}
+            <div class="client-meta">
+                {{ client.meal_count }} meal{{ 's' if client.meal_count != 1 else '' }} delivered
+                {% if client.last_delivery %} · Last: {{ client.last_delivery }}{% endif %}
+            </div>
+        </div>
+        <div class="client-card-actions">
+            <a href="/clients/{{ client.id }}" class="btn btn-outline btn-sm">View</a>
+            <a href="/clients/{{ client.id }}/log" class="btn btn-primary btn-sm">Log Meal</a>
+            <a href="/clients/{{ client.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No clients yet. Add your first client to start tracking meals.</p>
+    <a href="/clients/add" class="btn btn-primary">+ Add Client</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit ' + client.first_name + ' ' + client.last_name if client else 'Add Client' }} — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{{ 'Edit Client' if client else 'Add Client' }}</h1>
+</div>
+
+<form method="post" action="{{ '/clients/' + client.id|string + '/edit' if client else '/clients/add' }}" class="form-card">
+    <div class="form-group">
+        <label for="first_name">First Name <span class="required">*</span></label>
+        <input type="text" id="first_name" name="first_name" required
+               value="{{ client.first_name if client else '' }}" placeholder="Margaret">
+    </div>
+
+    <div class="form-group">
+        <label for="last_name">Last Name <span class="required">*</span></label>
+        <input type="text" id="last_name" name="last_name" required
+               value="{{ client.last_name if client else '' }}" placeholder="Henderson">
+    </div>
+
+    <div class="form-group">
+        <label>Dietary Needs</label>
+        <div class="tag-checkboxes">
+            {% for tag in all_tags %}
+            <label class="tag-check-pill" style="--tag-color: {{ tag.color }}">
+                <input type="checkbox" name="tags" value="{{ tag.id }}"
+                       {{ 'checked' if tag.id in selected_tag_ids else '' }}>
+                <span>{{ tag.display_name }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="dietary_notes">Dietary Notes</label>
+        <textarea id="dietary_notes" name="dietary_notes" rows="3"
+                  placeholder="Allergic to shellfish, prefers soft foods, no spicy food…">{{ client.dietary_notes if client and client.dietary_notes else '' }}</textarea>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ 'Save Changes' if client else 'Add Client' }}</button>
+        <a href="{{ '/clients/' + client.id|string if client else '/clients' }}" class="btn btn-outline">Cancel</a>
+    </div>
+
+    {% if client %}
+    <div class="form-danger-zone">
+        <form method="post" action="/clients/{{ client.id }}/delete"
+              onsubmit="return confirm('Remove this client? Their meal history will be preserved but they will no longer appear in the client list.')">
+            <button type="submit" class="btn btn-danger btn-sm">Remove Client</button>
+        </form>
+    </div>
+    {% endif %}
+</form>
+{% endblock %}

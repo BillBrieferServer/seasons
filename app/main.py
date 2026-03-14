@@ -8,6 +8,7 @@ from app.database.db import init_db
 from app.routes.recipes import router as recipes_router
 from app.routes.plans import router as plans_router
 from app.routes.shopping import router as shopping_router
+from app.routes.clients import router as clients_router
 
 app = FastAPI(title="Seasons Care Services", version="1.0.0")
 
@@ -19,6 +20,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.include_router(recipes_router)
 app.include_router(plans_router)
 app.include_router(shopping_router)
+app.include_router(clients_router)
 
 
 @app.on_event("startup")

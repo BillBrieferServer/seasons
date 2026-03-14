@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ client.first_name }} {{ client.last_name }} — Seasons{% endblock %}
+{% block content %}
+<div class="client-profile">
+    <div class="client-profile-header">
+        <div>
+            <h1>{{ client.first_name }} {{ client.last_name }}</h1>
+            {% if tags %}
+            <div class="tag-row">
+                {% for tag in tags %}
+                <span class="tag-badge" style="background:{{ tag.color }}">{{ tag.display_name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if client.dietary_notes %}
+            <p class="client-dietary-notes">{{ client.dietary_notes }}</p>
+            {% endif %}
+            <div class="client-stats">
+                {{ total_meals }} meal{{ 's' if total_meals != 1 else '' }} delivered
+                {% if first_delivery %} · Since {{ first_delivery }}{% endif %}
+            </div>
+        </div>
+        <div class="client-profile-actions">
+            <a href="/clients/{{ client.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
+            <a href="/clients/{{ client.id }}/log" class="btn btn-primary btn-sm">Log Meal</a>
+        </div>
+    </div>
+</div>
+
+<div class="meal-history-header">
+    <h2>Meal History</h2>
+    {% if total_meals > 0 %}
+    <a href="/clients/{{ client.id }}/report/print" class="btn btn-outline btn-sm" target="_blank">Print Report for Family</a>
+    {% endif %}
+</div>
+
+{% if months %}
+    {% for month_key, deliveries in months.items() %}
+    <div class="month-group">
+        <h3 class="month-header">
+            {{ deliveries[0].delivery_date[:7] }}
+            <span class="month-count">{{ deliveries|length }} meal{{ 's' if deliveries|length != 1 else '' }}</span>
+        </h3>
+        <div class="delivery-list">
+            {% for d in deliveries %}
+            <div class="delivery-row">
+                <div class="delivery-date">{{ d.delivery_date[5:] }}</div>
+                <div class="delivery-info">
+                    <a href="/recipes/{{ d.recipe_id }}" class="delivery-recipe-title">{{ d.recipe_title }}</a>
+                    <span class="delivery-servings">({{ d.servings }} serving{{ 's' if d.servings != 1 else '' }})</span>
+                    {% if d.recipe_tags %}
+                    <div class="delivery-tags">
+                        {% for tag_name in d.recipe_tags.split('||') %}
+                        <span class="tag-badge tag-badge-sm" style="background:{{ d.recipe_tag_colors.split('||')[loop.index0] }}">{{ tag_name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if d.notes %}
+                    <div class="delivery-note">"{{ d.notes }}"</div>
+                    {% endif %}
+                </div>
+                <form method="post" action="/deliveries/{{ d.id }}/delete" class="delivery-delete"
+                      onsubmit="return confirm('Delete this meal record?')">
+                    <button type="submit" class="btn-x" title="Delete">&times;</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="empty-state">
+    <p>No meals logged yet for {{ client.first_name }}.</p>
+    <a href="/clients/{{ client.id }}/log" class="btn btn-primary">Log First Meal</a>
+</div>
+{% endif %}
+
+<div class="back-link">
+    <a href="/clients">&larr; Back to Clients</a>
+</div>
+{% endblock %}

@@ -843,3 +843,177 @@ noscript .shop-item-form { display: inline; }
     margin-right: 4px;
     vertical-align: middle;
 }
+
+
+/* ========================================
+   Phase 5: Client Meal Log
+   ======================================== */
+
+/* Client List */
+.client-list { display: flex; flex-direction: column; gap: 1rem; }
+.client-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.client-card-main { flex: 1; }
+.client-name { font-family: Georgia, serif; margin-bottom: 0.3rem; }
+.client-name a { color: var(--terra); text-decoration: none; }
+.client-name a:hover { text-decoration: underline; }
+.client-notes { font-size: 0.88rem; color: var(--text-light); margin: 0.3rem 0; }
+.client-meta { font-size: 0.82rem; color: var(--sage); margin-top: 0.3rem; }
+.client-card-actions { display: flex; gap: 0.5rem; flex-shrink: 0; align-items: flex-start; }
+
+/* Client Detail */
+.client-profile { margin-bottom: 2rem; }
+.client-profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.client-profile-header h1 {
+    font-family: Georgia, serif;
+    color: var(--terra);
+    margin-bottom: 0.3rem;
+}
+.client-dietary-notes {
+    font-size: 0.92rem;
+    color: var(--text-light);
+    margin: 0.4rem 0;
+    font-style: italic;
+}
+.client-stats { font-size: 0.88rem; color: var(--sage); margin-top: 0.4rem; }
+.client-profile-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+/* Meal History */
+.meal-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.meal-history-header h2 { font-family: Georgia, serif; color: var(--terra); }
+
+.month-group { margin-bottom: 1.5rem; }
+.month-header {
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    color: var(--terra);
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--sage);
+    margin-bottom: 0.6rem;
+}
+.month-count { font-family: -apple-system, sans-serif; font-size: 0.82rem; color: var(--sage); font-weight: 400; margin-left: 0.5rem; }
+
+.delivery-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.delivery-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #eee;
+}
+.delivery-date {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--sage);
+    min-width: 50px;
+    flex-shrink: 0;
+}
+.delivery-info { flex: 1; }
+.delivery-recipe-title {
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+}
+.delivery-recipe-title:hover { color: var(--terra); }
+.delivery-servings { font-size: 0.85rem; color: var(--text-light); }
+.delivery-tags { margin-top: 3px; }
+.tag-badge-sm { font-size: 0.68rem; padding: 1px 6px; }
+.delivery-note { font-size: 0.85rem; color: var(--text-light); font-style: italic; margin-top: 3px; }
+.delivery-delete { flex-shrink: 0; }
+
+.btn-x {
+    background: none;
+    border: 1px solid #ddd;
+    color: #999;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-x:hover { background: #fdecea; color: #c0392b; border-color: #c0392b; }
+
+.back-link { margin-top: 2rem; }
+.back-link a { color: var(--sage); text-decoration: none; font-size: 0.92rem; }
+.back-link a:hover { color: var(--terra); }
+
+/* Meal Log Form */
+.meal-row {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+}
+.meal-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+.meal-row-header h3 { font-size: 0.95rem; color: var(--sage); }
+
+.form-row-inline { display: flex; gap: 1rem; }
+.form-group-sm { width: 100px; flex-shrink: 0; }
+.form-group-grow { flex: 1; }
+
+.recipe-search {
+    margin-bottom: 0.3rem;
+}
+.recipe-select { max-height: 200px; }
+
+/* Page Header Row (title + action button) */
+.page-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Form Danger Zone */
+.form-danger-zone {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+/* Tag checkboxes (client form) */
+.tag-checkboxes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag-check-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 4px 12px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.tag-check-pill input { display: none; }
+.tag-check-pill:has(input:checked) {
+    border-color: var(--tag-color);
+    background: var(--tag-color);
+    color: #fff;
+}
