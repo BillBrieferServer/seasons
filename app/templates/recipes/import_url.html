@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Import from URL — Seasons{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Import Recipes from a Website</h1>
+    <p class="subtitle">Paste a URL and we'll extract the recipes automatically</p>
+</div>
+
+{% if error_msg is defined and error_msg %}
+<div class="alert alert-danger">{{ error_msg }}</div>
+{% endif %}
+
+{% if not api_configured %}
+<div class="alert alert-warning">
+    Web recipe import is not configured yet. Please contact Steve to set up the API key.
+</div>
+{% else %}
+<form method="post" action="/recipes/import-url" class="form-card" id="import-form">
+    <div class="form-group">
+        <label for="url">Recipe Page URL</label>
+        <input type="url" id="url" name="url" required
+               placeholder="https://www.example.com/recipe/chicken-soup"
+               value="{{ url_value if url_value is defined else '' }}"
+               class="url-input">
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="import-btn">Import Recipes</button>
+    </div>
+
+    <div id="processing-msg" class="processing-msg" style="display:none">
+        Extracting recipes from this page… this may take a moment for pages with many recipes.
+    </div>
+</form>
+
+<div class="import-help">
+    <h3>Works with:</h3>
+    <ul>
+        <li>Single recipe pages (AllRecipes, Food Network, etc.)</li>
+        <li>Article pages with multiple recipes inline</li>
+        <li>Any page that has recipe ingredients and instructions</li>
+    </ul>
+    <p>Recipes will be sent to the <a href="/recipes/review">Review Queue</a> where you can check them for accuracy before approving.</p>
+</div>
+{% endif %}
+
+{% block scripts %}
+<script>
+document.getElementById('import-form')?.addEventListener('submit', function() {
+    document.getElementById('import-btn').disabled = true;
+    document.getElementById('import-btn').textContent = 'Importing…';
+    document.getElementById('processing-msg').style.display = 'block';
+});
+</script>
+{% endblock %}
+{% endblock %}

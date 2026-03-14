@@ -1017,3 +1017,47 @@ noscript .shop-item-form { display: inline; }
     background: var(--tag-color);
     color: #fff;
 }
+
+/* Phase 1B: Web URL Import */
+.url-input { font-size: 1rem; }
+.processing-msg {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--sage);
+    font-size: 1rem;
+    font-style: italic;
+}
+.import-help {
+    margin-top: 2rem;
+    padding: 1.2rem 1.5rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.import-help h3 {
+    font-family: Georgia, serif;
+    color: var(--sage);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+.import-help ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+.import-help li { margin-bottom: 0.3rem; font-size: 0.92rem; }
+.import-help p { font-size: 0.88rem; color: var(--text-light); margin-top: 0.8rem; }
+.import-help a { color: var(--terra); }
+.alert-danger {
+    background: #fdecea;
+    color: #c0392b;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+.alert-warning {
+    background: #fff8e6;
+    color: #856404;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}

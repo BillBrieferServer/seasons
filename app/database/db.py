@@ -60,8 +60,8 @@ def init_db(path: str):
             ('calorie-dense',      'Calorie-Dense',      '#8E5B6B'),
             ('low-sugar',          'Low-Sugar',          '#5B8E7B'),
             ('low-sodium',         'Low-Sodium',         '#6B8E8E'),
-            ('general-healthy',    'General Healthy',    '#808D86');
-            ('freezer-friendly',   'Freezer-Friendly',   '#4A7FA5'),
+            ('general-healthy',    'General Healthy',    '#808D86'),
+            ('freezer-friendly',   'Freezer-Friendly',   '#4A7FA5');
 
         CREATE TABLE IF NOT EXISTS recipe_tags (
             recipe_id INTEGER NOT NULL,
