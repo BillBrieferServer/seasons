@@ -251,3 +251,43 @@ async def edit_plan(request: Request, plan_id: int):
     db.commit()
     db.close()
     return RedirectResponse(url="/plans/" + str(plan_id), status_code=303)
+
+
+
+@router.get("/plans/{plan_id}/cook/{item_id}", response_class=HTMLResponse)
+async def cooking_mode_from_plan(request: Request, plan_id: int, item_id: int):
+    db = get_db()
+    item = db.execute("""
+        SELECT mpi.*, r.title, r.description, r.base_servings,
+               r.prep_time_minutes, r.cook_time_minutes, r.notes as recipe_notes
+        FROM meal_plan_items mpi
+        JOIN recipes r ON mpi.recipe_id = r.id
+        WHERE mpi.id = ? AND mpi.meal_plan_id = ?
+    """, (item_id, plan_id)).fetchone()
+
+    if not item:
+        db.close()
+        return RedirectResponse(url=f"/plans/{plan_id}", status_code=302)
+
+    recipe = db.execute("SELECT * FROM recipes WHERE id = ?", (item["recipe_id"],)).fetchone()
+
+    ingredients = db.execute("""
+        SELECT * FROM recipe_ingredients WHERE recipe_id = ?
+        ORDER BY sort_order
+    """, (item["recipe_id"],)).fetchall()
+
+    steps = db.execute("""
+        SELECT * FROM recipe_steps WHERE recipe_id = ?
+        ORDER BY step_number
+    """, (item["recipe_id"],)).fetchall()
+
+    db.close()
+
+    return templates.TemplateResponse("recipes/cooking.html", {
+        "request": request,
+        "recipe": recipe,
+        "ingredients": ingredients,
+        "steps": steps,
+        "servings": item["servings"],
+        "return_url": f"/plans/{plan_id}",
+    })

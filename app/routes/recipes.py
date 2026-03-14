@@ -606,3 +606,52 @@ def save_extracted_recipe(data, filename, db):
                        (recipe_id, tag["id"]))
 
     return recipe_id
+
+
+
+# ========================================
+# Cooking Mode
+# ========================================
+
+def format_cook_amount(amount):
+    if amount is None:
+        return None
+    if amount == 0:
+        return ""
+    if abs(amount - round(amount)) < 0.05:
+        return str(int(round(amount)))
+    if amount < 1:
+        return f"{amount:.2f}".rstrip('0').rstrip('.')
+    return f"{amount:.1f}".rstrip('0').rstrip('.')
+
+
+@router.get("/recipes/{recipe_id}/cook", response_class=HTMLResponse)
+async def cooking_mode(request: Request, recipe_id: int, servings: Optional[int] = None):
+    db = get_db()
+    recipe = db.execute("SELECT * FROM recipes WHERE id = ?", (recipe_id,)).fetchone()
+    if not recipe:
+        db.close()
+        return RedirectResponse(url="/recipes", status_code=302)
+
+    active_servings = servings if servings else recipe["base_servings"]
+
+    ingredients = db.execute("""
+        SELECT * FROM recipe_ingredients WHERE recipe_id = ?
+        ORDER BY sort_order
+    """, (recipe_id,)).fetchall()
+
+    steps = db.execute("""
+        SELECT * FROM recipe_steps WHERE recipe_id = ?
+        ORDER BY step_number
+    """, (recipe_id,)).fetchall()
+
+    db.close()
+
+    return templates.TemplateResponse("recipes/cooking.html", {
+        "request": request,
+        "recipe": recipe,
+        "ingredients": ingredients,
+        "steps": steps,
+        "servings": active_servings,
+        "return_url": f"/recipes/{recipe_id}",
+    })

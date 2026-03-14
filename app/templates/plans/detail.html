@@ -127,7 +127,7 @@
                 {% for item in days[day_idx] %}
                 <div class="plan-item meal-{{ item.meal_type }}">
                     <div class="plan-item-info">
-                        <a href="/recipes/{{ item.recipe_id }}" target="_blank" class="plan-item-title">{{ item.title }}</a>
+                        <a href="/recipes/{{ item.recipe_id }}" target="_blank" class="plan-item-title">{{ item.title }}</a> <a href="/plans/{{ plan.id }}/cook/{{ item.id }}" class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:0.72rem;">Cook</a>
                     </div>
                     <form method="post" action="/plans/{{ plan.id }}/update-item/{{ item.id }}" class="plan-item-controls">
                         <select name="day_of_week" onchange="this.form.submit()">
@@ -161,7 +161,7 @@
                 {% for item in days[None] %}
                 <div class="plan-item meal-{{ item.meal_type }}">
                     <div class="plan-item-info">
-                        <a href="/recipes/{{ item.recipe_id }}" target="_blank" class="plan-item-title">{{ item.title }}</a>
+                        <a href="/recipes/{{ item.recipe_id }}" target="_blank" class="plan-item-title">{{ item.title }}</a> <a href="/plans/{{ plan.id }}/cook/{{ item.id }}" class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:0.72rem;">Cook</a>
                     </div>
                     <form method="post" action="/plans/{{ plan.id }}/update-item/{{ item.id }}" class="plan-item-controls">
                         <select name="day_of_week" onchange="this.form.submit()">

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooking: {{ recipe.title }} — Seasons</title>
+    <style>
+        :root {
+            --terra: #993A31;
+            --sage: #808D86;
+            --cream: #FDF8F0;
+            --text: #2c2c2c;
+            --text-light: #666;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .cook-top {
+            background: var(--white);
+            border-bottom: 1px solid #e0ddd8;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .cook-exit {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .cook-exit:hover { color: var(--terra); }
+        .cook-title-block { text-align: center; flex: 1; padding: 0 1rem; }
+        .cook-title {
+            font-family: Georgia, 'Times New Roman', serif;
+            color: var(--terra);
+            font-size: 1.5rem;
+        }
+        .cook-time-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+        .serving-adjuster {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+        .serving-adjuster label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        .serving-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--sage);
+            background: var(--white);
+            color: var(--sage);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .serving-btn:hover { border-color: var(--terra); color: var(--terra); }
+        .serving-count {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--terra);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* Main Layout */
+        .cook-main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left Panel: Ingredients */
+        .cook-ingredients {
+            width: 320px;
+            flex-shrink: 0;
+            background: var(--white);
+            border-right: 1px solid #e0ddd8;
+            overflow-y: auto;
+            padding: 1.2rem;
+        }
+        .cook-ingredients h2 {
+            font-family: Georgia, serif;
+            font-size: 1.05rem;
+            color: var(--sage);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.8rem;
+        }
+        .ing-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0ede8;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .ing-item.checked { opacity: 0.4; }
+        .ing-item.checked .ing-name { text-decoration: line-through; }
+        .ing-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .ing-item.checked .ing-check {
+            background: var(--terra);
+            border-color: var(--terra);
+        }
+        .ing-item.checked .ing-check::after {
+            content: '\2713';
+            color: #fff;
+            font-size: 0.7rem;
+        }
+        .ing-detail { flex: 1; }
+        .ing-amount {
+            font-weight: 700;
+            color: var(--terra);
+        }
+        .ing-unit { color: var(--text-light); }
+        .ing-name { color: var(--text); }
+        .ing-note-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Right Panel: Steps */
+        .cook-steps {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 2rem 2.5rem;
+        }
+        .step-indicator {
+            font-size: 1rem;
+            color: var(--sage);
+            margin-bottom: 0.8rem;
+        }
+        .step-current {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        .step-current p {
+            font-size: 1.35rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+        .step-prev {
+            background: #f0ede8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.6;
+        }
+        .step-prev-label {
+            font-size: 0.78rem;
+            color: var(--sage);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+        .step-prev p {
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        /* Step Nav */
+        .step-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .step-btn {
+            padding: 0.7rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .step-btn-next {
+            background: var(--terra);
+            color: #fff;
+        }
+        .step-btn-next:hover { background: #7a2e27; }
+        .step-btn-back {
+            background: #e0ddd8;
+            color: var(--text);
+        }
+        .step-btn-back:hover { background: #d0cdc8; }
+        .step-btn-done {
+            background: var(--sage);
+            color: #fff;
+        }
+        .step-btn-done:hover { background: #6a7a73; }
+        .step-btn:disabled { opacity: 0.3; cursor: default; }
+
+        /* Step Dots */
+        .step-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d0cdc8;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            padding: 0;
+        }
+        .step-dot.active { background: var(--terra); transform: scale(1.2); }
+        .step-dot:hover { background: var(--sage); }
+
+        /* Done Bar */
+        .cook-done-bar {
+            background: var(--white);
+            border-top: 1px solid #e0ddd8;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        .btn-done-cook {
+            background: var(--sage);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-done-cook:hover { background: #6a7a73; }
+        .btn-log-meal {
+            background: var(--terra);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-log-meal:hover { background: #7a2e27; }
+
+        /* Mobile */
+        .cook-ingredients-toggle {
+            display: none;
+            background: var(--white);
+            border: 1px solid #e0ddd8;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--sage);
+            width: 100%;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .cook-main { flex-direction: column; }
+            .cook-ingredients {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e0ddd8;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0 1.2rem;
+                transition: max-height 0.3s, padding 0.3s;
+            }
+            .cook-ingredients.open {
+                max-height: 600px;
+                padding: 1.2rem;
+                overflow-y: auto;
+            }
+            .cook-ingredients-toggle { display: block; }
+            .cook-steps { padding: 1rem 1.2rem; }
+            .step-current p { font-size: 1.15rem; }
+            .cook-title { font-size: 1.2rem; }
+            .cook-top { flex-wrap: wrap; gap: 0.5rem; }
+            .cook-title-block { order: 3; flex-basis: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="cook-top">
+    <a href="{{ return_url }}" class="cook-exit" id="exit-link">&#10005; Exit</a>
+    <div class="cook-title-block">
+        <div class="cook-title">{{ recipe.title }}</div>
+        <div class="cook-time-info">
+            {% if recipe.prep_time_minutes %}Prep: {{ recipe.prep_time_minutes }} min{% endif %}
+            {% if recipe.prep_time_minutes and recipe.cook_time_minutes %} · {% endif %}
+            {% if recipe.cook_time_minutes %}Cook: {{ recipe.cook_time_minutes }} min{% endif %}
+            {% if recipe.prep_time_minutes and recipe.cook_time_minutes %} · Total: {{ recipe.prep_time_minutes + recipe.cook_time_minutes }} min{% endif %}
+        </div>
+    </div>
+    <div class="serving-adjuster">
+        <label>Servings:</label>
+        <button class="serving-btn" id="serv-minus">−</button>
+        <span class="serving-count" id="serv-count">{{ servings }}</span>
+        <button class="serving-btn" id="serv-plus">+</button>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="cook-main">
+    <!-- Ingredients -->
+    <button class="cook-ingredients-toggle" id="ing-toggle" onclick="document.getElementById('ing-panel').classList.toggle('open'); this.textContent = document.getElementById('ing-panel').classList.contains('open') ? '▾ Hide Ingredients' : '▸ Show Ingredients';">
+        ▸ Show Ingredients
+    </button>
+    <div class="cook-ingredients" id="ing-panel">
+        <h2>Ingredients</h2>
+        {% for ing in ingredients %}
+        <div class="ing-item" onclick="this.classList.toggle('checked')">
+            <div class="ing-check"></div>
+            <div class="ing-detail">
+                {% if ing.amount is not none %}
+                <span class="ing-amount" data-base="{{ ing.amount }}"></span>
+                {% endif %}
+                {% if ing.unit %}<span class="ing-unit">{{ ing.unit }}</span> {% endif %}
+                <span class="ing-name">{{ ing.name }}</span>
+                {% if ing.notes %}<div class="ing-note-text">{{ ing.notes }}</div>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Steps -->
+    <div class="cook-steps">
+        <div class="step-indicator" id="step-indicator">Step 1 of {{ steps|length }}</div>
+
+        <div class="step-prev" id="step-prev" style="display:none">
+            <div class="step-prev-label">Previous</div>
+            <p id="step-prev-text"></p>
+        </div>
+
+        <div class="step-current">
+            <p id="step-text"></p>
+        </div>
+
+        <div class="step-nav">
+            <button class="step-btn step-btn-back" id="btn-back" disabled>← Back</button>
+            <button class="step-btn step-btn-next" id="btn-next">Next →</button>
+        </div>
+
+        <div class="step-dots" id="step-dots">
+            {% for step in steps %}
+            <button class="step-dot{% if loop.index0 == 0 %} active{% endif %}" data-step="{{ loop.index0 }}"></button>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Done Bar -->
+<div class="cook-done-bar">
+    <a href="{{ return_url }}" class="btn-done-cook">Done Cooking</a>
+    <a href="/log?recipe_id={{ recipe.id }}&servings={{ servings }}" class="btn-log-meal">Log Meal for Client</a>
+</div>
+
+<script>
+// Step data
+const steps = [
+    {% for step in steps %}
+    "{{ step.instruction|e }}",
+    {% endfor %}
+];
+const totalSteps = steps.length;
+let currentStep = 0;
+
+// Ingredients base data
+const baseServings = {{ recipe.base_servings }};
+let activeServings = {{ servings }};
+
+// DOM refs
+const stepText = document.getElementById('step-text');
+const stepIndicator = document.getElementById('step-indicator');
+const stepPrev = document.getElementById('step-prev');
+const stepPrevText = document.getElementById('step-prev-text');
+const btnBack = document.getElementById('btn-back');
+const btnNext = document.getElementById('btn-next');
+const dots = document.querySelectorAll('.step-dot');
+const amountEls = document.querySelectorAll('.ing-amount');
+
+function formatAmount(val) {
+    if (val === null || val === undefined) return '';
+    if (val === 0) return '';
+    if (Math.abs(val - Math.round(val)) < 0.05) return Math.round(val).toString();
+    if (val < 1) return parseFloat(val.toFixed(2)).toString();
+    return parseFloat(val.toFixed(1)).toString();
+}
+
+function updateIngredients() {
+    amountEls.forEach(el => {
+        const base = parseFloat(el.dataset.base);
+        if (isNaN(base)) return;
+        const scaled = base * (activeServings / baseServings);
+        el.textContent = formatAmount(scaled);
+    });
+}
+
+function showStep(idx) {
+    currentStep = idx;
+    stepText.textContent = steps[idx];
+    stepIndicator.textContent = 'Step ' + (idx + 1) + ' of ' + totalSteps;
+
+    // Previous step
+    if (idx > 0) {
+        stepPrev.style.display = '';
+        stepPrevText.textContent = steps[idx - 1];
+    } else {
+        stepPrev.style.display = 'none';
+    }
+
+    // Back button
+    btnBack.disabled = idx === 0;
+
+    // Next button
+    if (idx === totalSteps - 1) {
+        btnNext.textContent = '✓ Done Cooking';
+        btnNext.className = 'step-btn step-btn-done';
+    } else {
+        btnNext.textContent = 'Next →';
+        btnNext.className = 'step-btn step-btn-next';
+    }
+
+    // Dots
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+btnNext.addEventListener('click', () => {
+    if (currentStep < totalSteps - 1) {
+        showStep(currentStep + 1);
+    } else {
+        // Done - go to return url
+        window.location.href = '{{ return_url }}';
+    }
+});
+
+btnBack.addEventListener('click', () => {
+    if (currentStep > 0) showStep(currentStep - 1);
+});
+
+dots.forEach(d => {
+    d.addEventListener('click', () => showStep(parseInt(d.dataset.step)));
+});
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && currentStep < totalSteps - 1) showStep(currentStep + 1);
+    if (e.key === 'ArrowLeft' && currentStep > 0) showStep(currentStep - 1);
+});
+
+// Serving adjuster
+document.getElementById('serv-minus').addEventListener('click', () => {
+    if (activeServings > 1) {
+        activeServings--;
+        document.getElementById('serv-count').textContent = activeServings;
+        updateIngredients();
+        history.replaceState(null, '', location.pathname + '?servings=' + activeServings);
+    }
+});
+document.getElementById('serv-plus').addEventListener('click', () => {
+    if (activeServings < 20) {
+        activeServings++;
+        document.getElementById('serv-count').textContent = activeServings;
+        updateIngredients();
+        history.replaceState(null, '', location.pathname + '?servings=' + activeServings);
+    }
+});
+
+// Exit confirmation
+document.getElementById('exit-link').addEventListener('click', function(e) {
+    if (currentStep > 0 && !confirm('Leave cooking mode?')) {
+        e.preventDefault();
+    }
+});
+
+// Wake Lock
+let wakeLock = null;
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+        }
+    } catch (err) {}
+}
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && !wakeLock) requestWakeLock();
+});
+
+// Init
+showStep(0);
+updateIngredients();
+requestWakeLock();
+</script>
+
+</body>
+</html>

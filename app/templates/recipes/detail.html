@@ -36,6 +36,7 @@
     {% endif %}
 
     <div class="detail-actions">
+        <a href="/recipes/{{ recipe.id }}/cook" class="btn btn-primary btn-sm">Start Cooking</a>
         <a href="/recipes/{{ recipe.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
         {% if recipe.status == 'review' %}
         <form method="post" action="/recipes/{{ recipe.id }}/approve" style="display:inline">
