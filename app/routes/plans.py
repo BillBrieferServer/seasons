@@ -208,7 +208,12 @@ async def remove_plan_item(request: Request, plan_id: int, item_id: int):
 @router.post("/plans/{plan_id}/delete")
 async def delete_plan(request: Request, plan_id: int):
     db = get_db()
-# Delete associated shopping lists and their items    for sl in db.execute("SELECT id FROM shopping_lists WHERE meal_plan_id = ?", (plan_id,)).fetchall():        db.execute("DELETE FROM shopping_list_items WHERE shopping_list_id = ?", (sl["id"],))    db.execute("DELETE FROM shopping_lists WHERE meal_plan_id = ?", (plan_id,))    # Delete plan items    db.execute("DELETE FROM meal_plan_items WHERE meal_plan_id = ?", (plan_id,))
+    # Delete associated shopping lists and their items
+    for sl in db.execute("SELECT id FROM shopping_lists WHERE meal_plan_id = ?", (plan_id,)).fetchall():
+        db.execute("DELETE FROM shopping_list_items WHERE shopping_list_id = ?", (sl["id"],))
+    db.execute("DELETE FROM shopping_lists WHERE meal_plan_id = ?", (plan_id,))
+    # Delete plan items
+    db.execute("DELETE FROM meal_plan_items WHERE meal_plan_id = ?", (plan_id,))
     db.execute("DELETE FROM meal_plans WHERE id = ?", (plan_id,))
     db.commit()
     db.close()
