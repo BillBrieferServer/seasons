@@ -52,7 +52,7 @@ a:hover { text-decoration: underline; }
     font-weight: bold;
 }
 .nav-brand:hover { text-decoration: none; }
-.nav-links { display: flex; align-items: center; gap: 1.2rem; }
+.nav-links { display: flex; align-items: center; gap: 1.2rem; margin-left: auto; margin-right: 1rem; }
 .nav-link { color: var(--sage); font-size: 0.92rem; font-weight: 500; }
 .nav-link:hover { color: var(--terra); text-decoration: none; }
 .nav-badge {
