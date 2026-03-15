@@ -9,7 +9,7 @@ from app.routes.recipes import router as recipes_router
 from app.routes.plans import router as plans_router
 from app.routes.shopping import router as shopping_router
 from app.routes.clients import router as clients_router
-from app.routes.auth import router as auth_router, get_current_user
+from app.routes.auth import router as auth_router, get_current_user, generate_csrf_token, make_csrf_signature
 from app.routes.admin import router as admin_router
 
 app = FastAPI(title="Seasons Care Services", version="1.0.0")
@@ -42,6 +42,10 @@ async def auth_middleware(request: Request, call_next):
     user = get_current_user(request)
     if not user:
         return RedirectResponse(url="/login", status_code=302)
+    # Inject CSRF token into request state for templates
+    csrf = generate_csrf_token()
+    request.state.csrf_token = csrf
+    request.state.csrf_sig = make_csrf_signature(csrf)
     return await call_next(request)
 
 

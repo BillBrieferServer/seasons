@@ -15,6 +15,8 @@
             <div class="alert alert-error">{{ pin_error }}</div>
             {% endif %}
             <form method="POST" action="/admin/reset-pin">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="csrf_sig" value="{{ csrf_sig }}">
                 <div class="form-group">
                     <label for="new_pin">New PIN</label>
                     <input type="password" id="new_pin" name="new_pin" required
@@ -34,6 +36,8 @@
         <div class="admin-card">
             <h2>Business Info</h2>
             <form method="POST" action="/admin/settings">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="csrf_sig" value="{{ csrf_sig }}">
                 <div class="form-group">
                     <label>Business Name</label>
                     <input type="text" name="business_name" value="{{ settings.get('business_name', '') }}">
@@ -75,6 +79,8 @@
                     <span class="tag-slug">{{ tag.name }}</span>
                     <form method="POST" action="/admin/tags/delete/{{ tag.id }}" class="tag-delete-form"
                           onsubmit="return confirm('Delete \'{{ tag.display_name }}\'? This will remove it from all recipes and clients.')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="csrf_sig" value="{{ csrf_sig }}">
                         <button type="submit" class="btn-delete" title="Delete tag">&times;</button>
                     </form>
                 </div>
@@ -84,6 +90,8 @@
             <div class="tag-add-section">
                 <h3>Add New Tag</h3>
                 <form method="POST" action="/admin/tags/add" class="tag-add-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="csrf_sig" value="{{ csrf_sig }}">
                     <div class="form-group">
                         <label>Display Name</label>
                         <input type="text" name="tag_display" required placeholder="e.g. Gluten-Free">
@@ -127,8 +135,6 @@
                      margin-bottom: 1rem; border: 1px solid #bbf7d0; }
     .alert-error { background: #fef2f2; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px;
                    margin-bottom: 1rem; border: 1px solid #fecaca; }
-
-    /* Tag management */
     .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
     .tag-row-admin { display: inline-flex; align-items: center; gap: 0.4rem; background: #f9fafb;
                      border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.3rem 0.5rem 0.3rem 0.3rem; }
@@ -139,7 +145,6 @@
     .btn-delete { background: none; border: none; color: #ccc; font-size: 1.2rem; cursor: pointer;
                   padding: 0 0.2rem; line-height: 1; }
     .btn-delete:hover { color: #ef4444; }
-
     .tag-add-section { border-top: 1px solid #e5e7eb; padding-top: 1rem; }
     .tag-add-section h3 { color: #555; font-size: 1rem; margin-bottom: 0.75rem; }
     .tag-add-form { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 0.75rem; align-items: end; }
