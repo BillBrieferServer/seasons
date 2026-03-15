@@ -11,6 +11,7 @@
         <div class="alert alert-error">{{ error }}</div>
         {% endif %}
         <form method="POST" action="/pin">
+            <input type="hidden" name="email" value="{{ email }}">
             <div class="form-group">
                 <label for="pin">PIN</label>
                 <input type="password" id="pin" name="pin" required autofocus

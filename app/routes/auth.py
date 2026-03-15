@@ -41,7 +41,6 @@ def verify_session_token(token: str):
         expected = hmac.new(get_secret().encode(), payload.encode(), hashlib.sha256).hexdigest()[:16]
         if not hmac.compare_digest(sig, expected):
             return None
-        # Sessions last 30 days
         if time.time() - int(ts) > 30 * 24 * 3600:
             return None
         return int(user_id)
@@ -66,14 +65,7 @@ async def login_page(request: Request):
     user = get_current_user(request)
     if user and user["is_setup"]:
         return RedirectResponse(url="/", status_code=302)
-    # Check if any user has set up their PIN
-    conn = get_db()
-    julie = conn.execute("SELECT * FROM users WHERE email = ?", ("julie@seasonscareservices.com",)).fetchone()
-    conn.close()
-    if julie and julie["is_setup"]:
-        return templates.TemplateResponse("auth/pin.html", {"request": request, "error": None})
-    else:
-        return templates.TemplateResponse("auth/login.html", {"request": request, "error": None})
+    return templates.TemplateResponse("auth/login.html", {"request": request, "error": None})
 
 
 @router.post("/login", response_class=HTMLResponse)
@@ -87,7 +79,13 @@ async def login_submit(request: Request, email: str = Form(...)):
             "error": "Email not recognized."
         })
     if user["is_setup"]:
-        return RedirectResponse(url="/login", status_code=302)
+        # User has a PIN — show PIN entry
+        return templates.TemplateResponse("auth/pin.html", {
+            "request": request,
+            "email": user["email"],
+            "error": None
+        })
+    # First time — set up PIN
     return templates.TemplateResponse("auth/setup_pin.html", {
         "request": request,
         "email": user["email"],
@@ -122,16 +120,20 @@ async def setup_pin(request: Request, email: str = Form(...), pin: str = Form(..
 
 
 @router.post("/pin", response_class=HTMLResponse)
-async def pin_submit(request: Request, pin: str = Form(...)):
+async def pin_submit(request: Request, pin: str = Form(...), email: str = Form(None)):
     conn = get_db()
-    julie = conn.execute("SELECT * FROM users WHERE email = ?", ("julie@seasonscareservices.com",)).fetchone()
+    if email:
+        user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+    else:
+        user = conn.execute("SELECT * FROM users WHERE is_setup = 1 LIMIT 1").fetchone()
     conn.close()
-    if not julie or hash_pin(pin) != julie["pin_hash"]:
+    if not user or hash_pin(pin) != user["pin_hash"]:
         return templates.TemplateResponse("auth/pin.html", {
             "request": request,
+            "email": email or "",
             "error": "Incorrect PIN."
         })
-    token = create_session_token(julie["id"])
+    token = create_session_token(user["id"])
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie("session", token, max_age=30*24*3600, httponly=True, samesite="lax")
     return response
