@@ -154,103 +154,64 @@
             font-style: italic;
         }
 
-        /* Right Panel: Steps */
+        /* Right Panel: All Steps */
         .cook-steps {
             flex: 1;
-            display: flex;
-            flex-direction: column;
             overflow-y: auto;
             padding: 2rem 2.5rem;
         }
-        .step-indicator {
-            font-size: 1rem;
-            color: var(--sage);
-            margin-bottom: 0.8rem;
-        }
-        .step-current {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 2rem 2.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 1.5rem;
-            flex-shrink: 0;
-        }
-        .step-current p {
-            font-size: 1.35rem;
-            line-height: 1.8;
-            color: var(--text);
-        }
-        .step-prev {
-            background: #f0ede8;
-            border-radius: 8px;
-            padding: 1rem 1.2rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.6;
-        }
-        .step-prev-label {
-            font-size: 0.78rem;
+        .cook-steps h2 {
+            font-family: Georgia, serif;
+            font-size: 1.05rem;
             color: var(--sage);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 0.3rem;
+            margin-bottom: 1.2rem;
         }
-        .step-prev p {
-            font-size: 0.92rem;
-            line-height: 1.5;
-            color: var(--text);
-        }
-
-        /* Step Nav */
-        .step-nav {
+        .step-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .step-btn {
-            padding: 0.7rem 1.8rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            gap: 1rem;
+            margin-bottom: 1rem;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: opacity 0.2s;
         }
-        .step-btn-next {
+        .step-item.completed { opacity: 0.4; }
+        .step-item.completed .step-text { text-decoration: line-through; }
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             background: var(--terra);
             color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.15s;
         }
-        .step-btn-next:hover { background: #7a2e27; }
-        .step-btn-back {
-            background: #e0ddd8;
+        .step-item.completed .step-number {
+            background: var(--sage);
+        }
+        .step-item.completed .step-number::after {
+            content: '\2713';
+        }
+        .step-item.completed .step-number .step-num-text {
+            display: none;
+        }
+        .step-card {
+            flex: 1;
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .step-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
             color: var(--text);
         }
-        .step-btn-back:hover { background: #d0cdc8; }
-        .step-btn-done {
-            background: var(--sage);
-            color: #fff;
-        }
-        .step-btn-done:hover { background: #6a7a73; }
-        .step-btn:disabled { opacity: 0.3; cursor: default; }
-
-        /* Step Dots */
-        .step-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .step-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #d0cdc8;
-            border: none;
-            cursor: pointer;
-            transition: all 0.15s;
-            padding: 0;
-        }
-        .step-dot.active { background: var(--terra); transform: scale(1.2); }
-        .step-dot:hover { background: var(--sage); }
 
         /* Done Bar */
         .cook-done-bar {
@@ -318,7 +279,7 @@
             }
             .cook-ingredients-toggle { display: block; }
             .cook-steps { padding: 1rem 1.2rem; }
-            .step-current p { font-size: 1.15rem; }
+            .step-text { font-size: 1rem; }
             .cook-title { font-size: 1.2rem; }
             .cook-top { flex-wrap: wrap; gap: 0.5rem; }
             .cook-title-block { order: 3; flex-basis: 100%; }
@@ -334,14 +295,14 @@
         <div class="cook-title">{{ recipe.title }}</div>
         <div class="cook-time-info">
             {% if recipe.prep_time_minutes %}Prep: {{ recipe.prep_time_minutes }} min{% endif %}
-            {% if recipe.prep_time_minutes and recipe.cook_time_minutes %} · {% endif %}
+            {% if recipe.prep_time_minutes and recipe.cook_time_minutes %} &middot; {% endif %}
             {% if recipe.cook_time_minutes %}Cook: {{ recipe.cook_time_minutes }} min{% endif %}
-            {% if recipe.prep_time_minutes and recipe.cook_time_minutes %} · Total: {{ recipe.prep_time_minutes + recipe.cook_time_minutes }} min{% endif %}
+            {% if recipe.prep_time_minutes and recipe.cook_time_minutes %} &middot; Total: {{ recipe.prep_time_minutes + recipe.cook_time_minutes }} min{% endif %}
         </div>
     </div>
     <div class="serving-adjuster">
         <label>Servings:</label>
-        <button class="serving-btn" id="serv-minus">−</button>
+        <button class="serving-btn" id="serv-minus">&minus;</button>
         <span class="serving-count" id="serv-count">{{ servings }}</span>
         <button class="serving-btn" id="serv-plus">+</button>
     </div>
@@ -350,8 +311,8 @@
 <!-- Main Content -->
 <div class="cook-main">
     <!-- Ingredients -->
-    <button class="cook-ingredients-toggle" id="ing-toggle" onclick="document.getElementById('ing-panel').classList.toggle('open'); this.textContent = document.getElementById('ing-panel').classList.contains('open') ? '▾ Hide Ingredients' : '▸ Show Ingredients';">
-        ▸ Show Ingredients
+    <button class="cook-ingredients-toggle" id="ing-toggle" onclick="document.getElementById('ing-panel').classList.toggle('open'); this.textContent = document.getElementById('ing-panel').classList.contains('open') ? '\u25BE Hide Ingredients' : '\u25B8 Show Ingredients';">
+        &#9656; Show Ingredients
     </button>
     <div class="cook-ingredients" id="ing-panel">
         <h2>Ingredients</h2>
@@ -370,29 +331,17 @@
         {% endfor %}
     </div>
 
-    <!-- Steps -->
+    <!-- Steps - All Listed -->
     <div class="cook-steps">
-        <div class="step-indicator" id="step-indicator">Step 1 of {{ steps|length }}</div>
-
-        <div class="step-prev" id="step-prev" style="display:none">
-            <div class="step-prev-label">Previous</div>
-            <p id="step-prev-text"></p>
+        <h2>Steps</h2>
+        {% for step in steps %}
+        <div class="step-item" onclick="this.classList.toggle('completed')">
+            <div class="step-number"><span class="step-num-text">{{ loop.index }}</span></div>
+            <div class="step-card">
+                <p class="step-text">{{ step.instruction }}</p>
+            </div>
         </div>
-
-        <div class="step-current">
-            <p id="step-text"></p>
-        </div>
-
-        <div class="step-nav">
-            <button class="step-btn step-btn-back" id="btn-back" disabled>← Back</button>
-            <button class="step-btn step-btn-next" id="btn-next">Next →</button>
-        </div>
-
-        <div class="step-dots" id="step-dots">
-            {% for step in steps %}
-            <button class="step-dot{% if loop.index0 == 0 %} active{% endif %}" data-step="{{ loop.index0 }}"></button>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -403,27 +352,9 @@
 </div>
 
 <script>
-// Step data
-const steps = [
-    {% for step in steps %}
-    "{{ step.instruction|e }}",
-    {% endfor %}
-];
-const totalSteps = steps.length;
-let currentStep = 0;
-
-// Ingredients base data
+// Ingredients scaling
 const baseServings = {{ recipe.base_servings }};
 let activeServings = {{ servings }};
-
-// DOM refs
-const stepText = document.getElementById('step-text');
-const stepIndicator = document.getElementById('step-indicator');
-const stepPrev = document.getElementById('step-prev');
-const stepPrevText = document.getElementById('step-prev-text');
-const btnBack = document.getElementById('btn-back');
-const btnNext = document.getElementById('btn-next');
-const dots = document.querySelectorAll('.step-dot');
 const amountEls = document.querySelectorAll('.ing-amount');
 
 function formatAmount(val) {
@@ -443,58 +374,6 @@ function updateIngredients() {
     });
 }
 
-function showStep(idx) {
-    currentStep = idx;
-    stepText.textContent = steps[idx];
-    stepIndicator.textContent = 'Step ' + (idx + 1) + ' of ' + totalSteps;
-
-    // Previous step
-    if (idx > 0) {
-        stepPrev.style.display = '';
-        stepPrevText.textContent = steps[idx - 1];
-    } else {
-        stepPrev.style.display = 'none';
-    }
-
-    // Back button
-    btnBack.disabled = idx === 0;
-
-    // Next button
-    if (idx === totalSteps - 1) {
-        btnNext.textContent = '✓ Done Cooking';
-        btnNext.className = 'step-btn step-btn-done';
-    } else {
-        btnNext.textContent = 'Next →';
-        btnNext.className = 'step-btn step-btn-next';
-    }
-
-    // Dots
-    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-}
-
-btnNext.addEventListener('click', () => {
-    if (currentStep < totalSteps - 1) {
-        showStep(currentStep + 1);
-    } else {
-        // Done - go to return url
-        window.location.href = '{{ return_url }}';
-    }
-});
-
-btnBack.addEventListener('click', () => {
-    if (currentStep > 0) showStep(currentStep - 1);
-});
-
-dots.forEach(d => {
-    d.addEventListener('click', () => showStep(parseInt(d.dataset.step)));
-});
-
-// Keyboard nav
-document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' && currentStep < totalSteps - 1) showStep(currentStep + 1);
-    if (e.key === 'ArrowLeft' && currentStep > 0) showStep(currentStep - 1);
-});
-
 // Serving adjuster
 document.getElementById('serv-minus').addEventListener('click', () => {
     if (activeServings > 1) {
@@ -513,13 +392,6 @@ document.getElementById('serv-plus').addEventListener('click', () => {
     }
 });
 
-// Exit confirmation
-document.getElementById('exit-link').addEventListener('click', function(e) {
-    if (currentStep > 0 && !confirm('Leave cooking mode?')) {
-        e.preventDefault();
-    }
-});
-
 // Wake Lock
 let wakeLock = null;
 async function requestWakeLock() {
@@ -534,7 +406,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // Init
-showStep(0);
 updateIngredients();
 requestWakeLock();
 </script>
