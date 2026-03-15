@@ -42,7 +42,7 @@
         </form>
         {% endif %}
     </div>
-    {% for item in aisle.items %}
+    {% for item in aisle['items'] %}
     <div class="shop-item {% if item.checked %}shop-item-checked{% endif %}"
          onclick="toggleItem({{ slist.id }}, {{ item.id }}, this)">
         <div class="shop-checkbox">

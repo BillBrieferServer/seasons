@@ -63,7 +63,7 @@
     {% for aisle in aisles %}
     <div class="print-aisle">
         <div class="print-aisle-header">{{ aisle.label }}</div>
-        {% for item in aisle.items %}
+        {% for item in aisle['items'] %}
         <div class="print-item">
             <span class="print-checkbox"></span>
             <span class="print-amount">
