@@ -37,7 +37,7 @@
         All ({{ total_count }})
     </a>
     {% for tc in tag_counts %}
-        {% if tc.cnt > 0 %}
+        {% if true %}
         <a href="/recipes?tag={{ tc.name }}{% if search_query %}&amp;q={{ search_query }}{% endif %}"
            class="filter-pill {% if active_tag == tc.name %}active{% endif %}"
            style="{% if active_tag == tc.name %}background:{{ tc.color }};border-color:{{ tc.color }};color:#fff;{% else %}border-color:{{ tc.color }};color:{{ tc.color }};{% endif %}">
