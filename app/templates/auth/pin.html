@@ -11,7 +11,6 @@
         <div class="alert alert-error">{{ error }}</div>
         {% endif %}
         <form method="POST" action="/pin">
-            <input type="hidden" name="email" value="{{ email }}">
             <div class="form-group">
                 <label for="pin">PIN</label>
                 <input type="password" id="pin" name="pin" required autofocus
@@ -20,6 +19,9 @@
             </div>
             <button type="submit" class="btn btn-primary btn-full">Sign In</button>
         </form>
+        <div class="auth-alt">
+            <a href="/login/email">Use email instead</a>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -39,5 +41,8 @@
     .btn-full { width: 100%; padding: 0.75rem; font-size: 1.1rem; }
     .alert-error { background: #fef2f2; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px;
                    margin-bottom: 1rem; border: 1px solid #fecaca; }
+    .auth-alt { text-align: center; margin-top: 1.5rem; }
+    .auth-alt a { color: #808D86; font-size: 0.85rem; text-decoration: none; }
+    .auth-alt a:hover { text-decoration: underline; }
 </style>
 {% endblock %}

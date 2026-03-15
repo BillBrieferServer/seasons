@@ -65,6 +65,20 @@ async def login_page(request: Request):
     user = get_current_user(request)
     if user and user["is_setup"]:
         return RedirectResponse(url="/", status_code=302)
+    # Check if any user has a PIN set up
+    conn = get_db()
+    setup_count = conn.execute("SELECT COUNT(*) as c FROM users WHERE is_setup = 1").fetchone()["c"]
+    conn.close()
+    if setup_count > 0:
+        # Show PIN-only page (checks all users' PINs)
+        return templates.TemplateResponse("auth/pin.html", {"request": request, "error": None})
+    else:
+        # No one has set up yet — show email form to start setup
+        return templates.TemplateResponse("auth/login.html", {"request": request, "error": None})
+
+
+@router.get("/login/email", response_class=HTMLResponse)
+async def login_email_page(request: Request):
     return templates.TemplateResponse("auth/login.html", {"request": request, "error": None})
 
 
@@ -79,13 +93,10 @@ async def login_submit(request: Request, email: str = Form(...)):
             "error": "Email not recognized."
         })
     if user["is_setup"]:
-        # User has a PIN — show PIN entry
         return templates.TemplateResponse("auth/pin.html", {
             "request": request,
-            "email": user["email"],
             "error": None
         })
-    # First time — set up PIN
     return templates.TemplateResponse("auth/setup_pin.html", {
         "request": request,
         "email": user["email"],
@@ -120,17 +131,15 @@ async def setup_pin(request: Request, email: str = Form(...), pin: str = Form(..
 
 
 @router.post("/pin", response_class=HTMLResponse)
-async def pin_submit(request: Request, pin: str = Form(...), email: str = Form(None)):
+async def pin_submit(request: Request, pin: str = Form(...)):
+    pin_hash = hash_pin(pin)
     conn = get_db()
-    if email:
-        user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
-    else:
-        user = conn.execute("SELECT * FROM users WHERE is_setup = 1 LIMIT 1").fetchone()
+    # Check PIN against all users
+    user = conn.execute("SELECT * FROM users WHERE pin_hash = ? AND is_setup = 1", (pin_hash,)).fetchone()
     conn.close()
-    if not user or hash_pin(pin) != user["pin_hash"]:
+    if not user:
         return templates.TemplateResponse("auth/pin.html", {
             "request": request,
-            "email": email or "",
             "error": "Incorrect PIN."
         })
     token = create_session_token(user["id"])
