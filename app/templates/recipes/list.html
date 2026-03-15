@@ -2,8 +2,23 @@
 {% block title %}Recipe Library — Seasons{% endblock %}
 {% block content %}
 <div class="page-header">
-    <h1>Recipe Library</h1>
-    <p class="subtitle">{{ total_count }} recipe{{ 's' if total_count != 1 else '' }} in your collection</p>
+    <div class="page-header-top">
+        <div>
+            <h1>Recipe Library</h1>
+            <p class="subtitle">{{ total_count }} recipe{{ 's' if total_count != 1 else '' }} in your collection</p>
+        </div>
+        <div class="page-actions">
+            <a href="/recipes/add" class="btn btn-primary btn-sm">+ Add Recipe</a>
+            <a href="/recipes/upload" class="btn btn-outline btn-sm">Upload PDF</a>
+            <a href="/recipes/import-url" class="btn btn-outline btn-sm">Import URL</a>
+            <a href="/recipes/review" class="btn btn-outline btn-sm">
+                Review Queue
+                {% if review_count is defined and review_count > 0 %}
+                    <span class="nav-badge">{{ review_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
 </div>
 
 <!-- Search -->
