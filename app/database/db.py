@@ -144,6 +144,16 @@ def init_db(path: str):
             FOREIGN KEY (shopping_list_id) REFERENCES shopping_lists(id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            pin_hash TEXT,
+            is_setup INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        INSERT OR IGNORE INTO users (email) VALUES ('julie@seasonscareservices.com');
+
         CREATE TABLE IF NOT EXISTS meal_deliveries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             client_id INTEGER NOT NULL,

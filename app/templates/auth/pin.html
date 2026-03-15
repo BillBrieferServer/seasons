@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Sign In — Seasons{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Seasons</h1>
+            <p>Enter your PIN to continue.</p>
+        </div>
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="/pin">
+            <div class="form-group">
+                <label for="pin">PIN</label>
+                <input type="password" id="pin" name="pin" required autofocus
+                       inputmode="numeric" pattern="[0-9]{4,6}" maxlength="6"
+                       placeholder="&#8226;&#8226;&#8226;&#8226;">
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block head %}
+<style>
+    .auth-container { display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 2rem; }
+    .auth-card { background: #fff; border-radius: 12px; padding: 2.5rem; max-width: 400px; width: 100%;
+                 box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .auth-header { text-align: center; margin-bottom: 2rem; }
+    .auth-header h1 { color: #808D86; font-size: 2rem; margin-bottom: 0.5rem; }
+    .auth-header p { color: #666; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333; }
+    .form-group input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;
+                        font-size: 2rem; text-align: center; letter-spacing: 0.75rem; box-sizing: border-box; }
+    .form-group input:focus { outline: none; border-color: #808D86; box-shadow: 0 0 0 3px rgba(128,141,134,0.15); }
+    .btn-full { width: 100%; padding: 0.75rem; font-size: 1.1rem; }
+    .alert-error { background: #fef2f2; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px;
+                   margin-bottom: 1rem; border: 1px solid #fecaca; }
+</style>
+{% endblock %}

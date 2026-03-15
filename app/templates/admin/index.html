@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Admin — Seasons{% endblock %}
+{% block content %}
+<div class="admin-container">
+    <h1>Admin Settings</h1>
+
+    {% if success %}
+    <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
+    <div class="admin-grid">
+        <div class="admin-card">
+            <h2>Change PIN</h2>
+            {% if pin_error is defined and pin_error %}
+            <div class="alert alert-error">{{ pin_error }}</div>
+            {% endif %}
+            <form method="POST" action="/admin/reset-pin">
+                <div class="form-group">
+                    <label for="new_pin">New PIN</label>
+                    <input type="password" id="new_pin" name="new_pin" required
+                           inputmode="numeric" pattern="[0-9]{4,6}" maxlength="6"
+                           placeholder="4-6 digits">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_pin">Confirm PIN</label>
+                    <input type="password" id="confirm_pin" name="confirm_pin" required
+                           inputmode="numeric" pattern="[0-9]{4,6}" maxlength="6"
+                           placeholder="Confirm">
+                </div>
+                <button type="submit" class="btn btn-primary">Update PIN</button>
+            </form>
+        </div>
+
+        <div class="admin-card">
+            <h2>Business Info</h2>
+            <form method="POST" action="/admin/settings">
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" name="business_name" value="{{ settings.get('business_name', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Tagline</label>
+                    <input type="text" name="tagline" value="{{ settings.get('tagline', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" name="phone" value="{{ settings.get('phone', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ settings.get('email', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" name="address" value="{{ settings.get('address', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Service Area</label>
+                    <input type="text" name="service_area" value="{{ settings.get('service_area', '') }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block head %}
+<style>
+    .admin-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+    .admin-container h1 { color: #333; margin-bottom: 1.5rem; }
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .admin-grid { grid-template-columns: 1fr; } }
+    .admin-card { background: #fff; border-radius: 12px; padding: 1.5rem;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .admin-card h2 { color: #808D86; margin-bottom: 1rem; font-size: 1.2rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; color: #555; font-size: 0.9rem; }
+    .form-group input { width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 6px;
+                        font-size: 0.95rem; box-sizing: border-box; }
+    .form-group input:focus { outline: none; border-color: #808D86; }
+    .alert-success { background: #f0fdf4; color: #166534; padding: 0.75rem 1rem; border-radius: 8px;
+                     margin-bottom: 1rem; border: 1px solid #bbf7d0; }
+    .alert-error { background: #fef2f2; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px;
+                   margin-bottom: 1rem; border: 1px solid #fecaca; }
+</style>
+{% endblock %}
