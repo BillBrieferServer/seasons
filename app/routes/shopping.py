@@ -245,7 +245,7 @@ async def shopping_print(request: Request, list_id: int):
 
     items = db.execute("""
         SELECT * FROM shopping_list_items
-        WHERE shopping_list_id = ?
+        WHERE shopping_list_id = ? AND checked = 0
         ORDER BY ingredient_name
     """, (list_id,)).fetchall()
 
