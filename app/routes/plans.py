@@ -126,8 +126,24 @@ async def plan_detail(request: Request, plan_id: int, q: str = "", tag: str = ""
         ORDER BY dt.display_name
     """).fetchall()
 
+    # Fetch sides
+    sides = db.execute("""
+        SELECT * FROM meal_plan_sides
+        WHERE meal_plan_id = ?
+        ORDER BY day_of_week IS NULL, day_of_week, name
+    """, (plan_id,)).fetchall()
+
+    # Group sides by day
+    sides_by_day = {}
+    for i in range(7):
+        sides_by_day[i] = []
+    sides_by_day[None] = []
+    for side in sides:
+        sides_by_day[side["day_of_week"]].append(side)
+
     total_meals = len(items)
     total_servings = sum(item["servings"] for item in items)
+    total_sides = len(sides)
     review_count = db.execute("SELECT COUNT(*) as cnt FROM recipes WHERE status='review'").fetchone()["cnt"]
     db.close()
 
@@ -144,6 +160,18 @@ async def plan_detail(request: Request, plan_id: int, q: str = "", tag: str = ""
         "review_count": review_count,
         "search_query": q,
         "active_tag": tag,
+        "sides_by_day": sides_by_day,
+        "total_sides": total_sides,
+        "aisle_categories": [
+            ("produce", "Produce"),
+            ("dairy", "Dairy & Eggs"),
+            ("meat", "Meat & Seafood"),
+            ("bakery", "Bakery & Bread"),
+            ("frozen", "Frozen"),
+            ("canned", "Canned & Jarred"),
+            ("grains", "Grains, Pasta & Rice"),
+            ("other", "Other"),
+        ],
     })
 
 
@@ -212,8 +240,9 @@ async def delete_plan(request: Request, plan_id: int):
     for sl in db.execute("SELECT id FROM shopping_lists WHERE meal_plan_id = ?", (plan_id,)).fetchall():
         db.execute("DELETE FROM shopping_list_items WHERE shopping_list_id = ?", (sl["id"],))
     db.execute("DELETE FROM shopping_lists WHERE meal_plan_id = ?", (plan_id,))
-    # Delete plan items
+    # Delete plan items and sides
     db.execute("DELETE FROM meal_plan_items WHERE meal_plan_id = ?", (plan_id,))
+    db.execute("DELETE FROM meal_plan_sides WHERE meal_plan_id = ?", (plan_id,))
     db.execute("DELETE FROM meal_plans WHERE id = ?", (plan_id,))
     db.commit()
     db.close()
@@ -241,6 +270,14 @@ async def duplicate_plan(request: Request, plan_id: int):
             (new_id, item["recipe_id"], item["day_of_week"], item["meal_type"], item["servings"])
         )
 
+    # Copy sides too
+    sides = db.execute("SELECT * FROM meal_plan_sides WHERE meal_plan_id = ?", (plan_id,)).fetchall()
+    for side in sides:
+        db.execute(
+            "INSERT INTO meal_plan_sides (meal_plan_id, day_of_week, name, amount, unit, aisle_category) VALUES (?, ?, ?, ?, ?, ?)",
+            (new_id, side["day_of_week"], side["name"], side["amount"], side["unit"], side["aisle_category"])
+        )
+
     db.commit()
     db.close()
     return RedirectResponse(url="/plans/" + str(new_id), status_code=303)
@@ -258,6 +295,58 @@ async def edit_plan(request: Request, plan_id: int):
     db.close()
     return RedirectResponse(url="/plans/" + str(plan_id), status_code=303)
 
+
+
+@router.post("/plans/{plan_id}/add-side")
+async def add_side_to_plan(request: Request, plan_id: int):
+    form = await request.form()
+    name = form.get("side_name", "").strip()
+    if not name:
+        return RedirectResponse(url="/plans/" + str(plan_id), status_code=303)
+    day = form.get("side_day")
+    if day == "" or day == "null":
+        day = None
+    else:
+        day = int(day)
+    amount = form.get("side_amount", "").strip()
+    amount = float(amount) if amount else None
+    unit = form.get("side_unit", "").strip() or None
+    aisle = form.get("side_aisle", "produce")
+    db = get_db()
+    db.execute(
+        "INSERT INTO meal_plan_sides (meal_plan_id, day_of_week, name, amount, unit, aisle_category) VALUES (?, ?, ?, ?, ?, ?)",
+        (plan_id, day, name, amount, unit, aisle)
+    )
+    db.commit()
+    db.close()
+    return RedirectResponse(url="/plans/" + str(plan_id), status_code=303)
+
+
+@router.post("/plans/{plan_id}/update-side/{side_id}")
+async def update_side(request: Request, plan_id: int, side_id: int):
+    form = await request.form()
+    day = form.get("day_of_week")
+    if day == "" or day == "null":
+        day = None
+    else:
+        day = int(day)
+    db = get_db()
+    db.execute(
+        "UPDATE meal_plan_sides SET day_of_week = ? WHERE id = ? AND meal_plan_id = ?",
+        (day, side_id, plan_id)
+    )
+    db.commit()
+    db.close()
+    return RedirectResponse(url="/plans/" + str(plan_id), status_code=303)
+
+
+@router.post("/plans/{plan_id}/remove-side/{side_id}")
+async def remove_side(request: Request, plan_id: int, side_id: int):
+    db = get_db()
+    db.execute("DELETE FROM meal_plan_sides WHERE id = ? AND meal_plan_id = ?", (side_id, plan_id))
+    db.commit()
+    db.close()
+    return RedirectResponse(url="/plans/" + str(plan_id), status_code=303)
 
 
 @router.get("/plans/{plan_id}/cook/{item_id}", response_class=HTMLResponse)

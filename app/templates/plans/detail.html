@@ -10,6 +10,7 @@
                 {% if plan.week_start %}Week of {{ plan.week_start }} &middot; {% endif %}
                 {{ total_meals }} meal{{ 's' if total_meals != 1 else '' }} &middot;
                 {{ total_servings }} total servings
+                {% if total_sides %} &middot; {{ total_sides }} side{{ 's' if total_sides != 1 else '' }}{% endif %}
             </p>
         </div>
         <div class="plan-header-actions">
@@ -123,7 +124,7 @@
         {% for day_idx in range(7) %}
         <div class="day-group">
             <div class="day-header">{{ day_names[day_idx] }}</div>
-            {% if days[day_idx] %}
+            {% if days[day_idx] or sides_by_day[day_idx] %}
                 {% for item in days[day_idx] %}
                 <div class="plan-item meal-{{ item.meal_type }}">
                     <div class="plan-item-info">
@@ -148,6 +149,25 @@
                     </form>
                 </div>
                 {% endfor %}
+                {% for side in sides_by_day[day_idx] %}
+                <div class="plan-item side-item">
+                    <div class="plan-item-info">
+                        <span class="side-badge">Side</span>
+                        <span class="plan-item-title">{{ side.name }}{% if side.amount %} <span class="side-qty">{{ side.amount }}{{ ' ' + side.unit if side.unit else '' }}</span>{% endif %}</span>
+                    </div>
+                    <form method="post" action="/plans/{{ plan.id }}/update-side/{{ side.id }}" class="plan-item-controls">
+                        <select name="day_of_week" onchange="this.form.submit()">
+                            {% for d in range(7) %}
+                            <option value="{{ d }}" {% if side.day_of_week == d %}selected{% endif %}>{{ day_names[d][:3] }}</option>
+                            {% endfor %}
+                            <option value="null" {% if side.day_of_week is none %}selected{% endif %}>—</option>
+                        </select>
+                    </form>
+                    <form method="post" action="/plans/{{ plan.id }}/remove-side/{{ side.id }}" style="display:inline">
+                        <button type="submit" class="btn-remove">&times;</button>
+                    </form>
+                </div>
+                {% endfor %}
             {% else %}
                 <div class="day-empty">No meals planned</div>
             {% endif %}
@@ -157,7 +177,7 @@
         <!-- Unassigned -->
         <div class="day-group unassigned-group">
             <div class="day-header day-header-unassigned">Unassigned</div>
-            {% if days[None] %}
+            {% if days[None] or sides_by_day[None] %}
                 {% for item in days[None] %}
                 <div class="plan-item meal-{{ item.meal_type }}">
                     <div class="plan-item-info">
@@ -182,9 +202,60 @@
                     </form>
                 </div>
                 {% endfor %}
+                {% for side in sides_by_day[None] %}
+                <div class="plan-item side-item">
+                    <div class="plan-item-info">
+                        <span class="side-badge">Side</span>
+                        <span class="plan-item-title">{{ side.name }}{% if side.amount %} <span class="side-qty">{{ side.amount }}{{ ' ' + side.unit if side.unit else '' }}</span>{% endif %}</span>
+                    </div>
+                    <form method="post" action="/plans/{{ plan.id }}/update-side/{{ side.id }}" class="plan-item-controls">
+                        <select name="day_of_week" onchange="this.form.submit()">
+                            {% for d in range(7) %}
+                            <option value="{{ d }}" {% if side.day_of_week == d %}selected{% endif %}>{{ day_names[d][:3] }}</option>
+                            {% endfor %}
+                            <option value="null" {% if side.day_of_week is none %}selected{% endif %}>—</option>
+                        </select>
+                    </form>
+                    <form method="post" action="/plans/{{ plan.id }}/remove-side/{{ side.id }}" style="display:inline">
+                        <button type="submit" class="btn-remove">&times;</button>
+                    </form>
+                </div>
+                {% endfor %}
             {% else %}
                 <div class="day-empty">No unassigned meals</div>
             {% endif %}
+        </div>
+
+        <!-- Quick Add Side -->
+        <div class="side-add-card">
+            <h3>Add a Side</h3>
+            <form method="post" action="/plans/{{ plan.id }}/add-side" class="side-add-form">
+                <input type="text" name="side_name" placeholder="e.g., Side salad, Steamed broccoli" required class="side-name-input">
+                <input type="number" name="side_amount" placeholder="Qty" step="0.25" min="0" class="side-amount-input">
+                <input type="text" name="side_unit" placeholder="Unit" class="side-unit-input" list="side-units">
+                <datalist id="side-units">
+                    <option value="lb">
+                    <option value="oz">
+                    <option value="bag">
+                    <option value="bunch">
+                    <option value="head">
+                    <option value="can">
+                    <option value="pkg">
+                    <option value="cup">
+                </datalist>
+                <select name="side_aisle" class="side-aisle-input">
+                    {% for key, label in aisle_categories %}
+                    <option value="{{ key }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <select name="side_day" class="side-day-input">
+                    <option value="null">Unassigned</option>
+                    {% for d in range(7) %}
+                    <option value="{{ d }}">{{ day_names[d] }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm">+ Add Side</button>
+            </form>
         </div>
 
         <!-- Shopping List Button -->

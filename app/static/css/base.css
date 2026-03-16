@@ -1085,3 +1085,83 @@ noscript .shop-item-form { display: inline; }
     .page-header-top { flex-direction: column; }
     .page-actions { width: 100%; }
 }
+
+/* Side items in meal plan */
+.side-item {
+    background: #f0f7f0;
+    border-left: 3px solid #6aaa64;
+}
+.side-badge {
+    display: inline-block;
+    background: #6aaa64;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+.side-qty {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Quick-add side form */
+.side-add-card {
+    background: #f8f9fa;
+    border: 1px dashed #ccc;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+}
+.side-add-card h3 {
+    font-size: 0.85rem;
+    margin: 0 0 0.5rem;
+    color: #555;
+}
+.side-add-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+}
+.side-name-input {
+    flex: 2;
+    min-width: 140px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.82rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.side-amount-input {
+    width: 60px;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.82rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.side-unit-input {
+    width: 70px;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.82rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.side-aisle-input,
+.side-day-input {
+    padding: 0.35rem 0.4rem;
+    font-size: 0.82rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+@media (max-width: 600px) {
+    .side-add-form { flex-direction: column; }
+    .side-name-input,
+    .side-amount-input,
+    .side-unit-input,
+    .side-aisle-input,
+    .side-day-input { width: 100%; }
+}

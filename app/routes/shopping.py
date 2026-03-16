@@ -85,6 +85,35 @@ def generate_list_items(db, plan_id):
         if "display_name" not in combined[key]:
             combined[key]["display_name"] = item["name"].strip()
 
+    # Also include sides from meal_plan_sides
+    sides = db.execute("""
+        SELECT name, amount, unit, aisle_category
+        FROM meal_plan_sides
+        WHERE meal_plan_id = ?
+    """, (plan_id,)).fetchall()
+
+    for side in sides:
+        name_lower = side["name"].strip().lower()
+        unit = (side["unit"] or "").strip().lower() or None
+        key = (name_lower, unit)
+
+        if side["amount"] is not None:
+            entry = combined[key]
+            if entry["has_amount"]:
+                entry["amount"] = (entry["amount"] or 0) + side["amount"]
+            else:
+                entry["amount"] = side["amount"]
+                entry["has_amount"] = True
+        else:
+            if not combined[key]["has_amount"]:
+                combined[key]["amount"] = None
+
+        if combined[key].get("aisle") == "other" and side["aisle_category"]:
+            combined[key]["aisle"] = side["aisle_category"]
+
+        if "display_name" not in combined[key]:
+            combined[key]["display_name"] = side["name"].strip()
+
     result = []
     for (name_lower, unit), data in combined.items():
         result.append({
