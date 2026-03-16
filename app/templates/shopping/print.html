@@ -9,7 +9,8 @@
         .print-header { text-align: center; margin-bottom: 12pt; }
         .print-header h1 { font-family: Georgia, serif; font-size: 14pt; color: #993A31; }
         .print-header p { font-size: 9pt; color: #666; }
-        .print-aisle { margin-top: 10pt; }
+        .print-columns { column-count: 2; column-gap: 24pt; }
+        .print-aisle { margin-top: 10pt; break-inside: avoid; }
         .print-aisle-header {
             font-weight: 700;
             font-size: 11pt;
@@ -61,6 +62,7 @@
         <p>{{ slist.plan_name or 'Shopping List' }}{% if slist.week_start %} &mdash; Week of {{ slist.week_start }}{% endif %}</p>
     </div>
 
+    <div class="print-columns">
     {% for aisle in aisles %}
     <div class="print-aisle">
         <div class="print-aisle-header">{{ aisle.label }}</div>
@@ -75,6 +77,7 @@
         {% endfor %}
     </div>
     {% endfor %}
+    </div>
 
     <div class="print-footer">Seasons Care Services &bull; Julie Brown &bull; Pocatello, Idaho</div>
 </body>
