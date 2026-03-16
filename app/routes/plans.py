@@ -274,8 +274,8 @@ async def duplicate_plan(request: Request, plan_id: int):
     sides = db.execute("SELECT * FROM meal_plan_sides WHERE meal_plan_id = ?", (plan_id,)).fetchall()
     for side in sides:
         db.execute(
-            "INSERT INTO meal_plan_sides (meal_plan_id, day_of_week, name, amount, unit, aisle_category) VALUES (?, ?, ?, ?, ?, ?)",
-            (new_id, side["day_of_week"], side["name"], side["amount"], side["unit"], side["aisle_category"])
+            "INSERT INTO meal_plan_sides (meal_plan_id, day_of_week, name, amount, unit, aisle_category, meal_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (new_id, side["day_of_week"], side["name"], side["amount"], side["unit"], side["aisle_category"], side["meal_type"])
         )
 
     db.commit()
@@ -312,10 +312,11 @@ async def add_side_to_plan(request: Request, plan_id: int):
     amount = float(amount) if amount else None
     unit = form.get("side_unit", "").strip() or None
     aisle = form.get("side_aisle", "produce")
+    meal_type = form.get("side_meal_type", "dinner")
     db = get_db()
     db.execute(
-        "INSERT INTO meal_plan_sides (meal_plan_id, day_of_week, name, amount, unit, aisle_category) VALUES (?, ?, ?, ?, ?, ?)",
-        (plan_id, day, name, amount, unit, aisle)
+        "INSERT INTO meal_plan_sides (meal_plan_id, day_of_week, name, amount, unit, aisle_category, meal_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (plan_id, day, name, amount, unit, aisle, meal_type)
     )
     db.commit()
     db.close()
@@ -330,10 +331,11 @@ async def update_side(request: Request, plan_id: int, side_id: int):
         day = None
     else:
         day = int(day)
+    meal_type = form.get("meal_type", "dinner")
     db = get_db()
     db.execute(
-        "UPDATE meal_plan_sides SET day_of_week = ? WHERE id = ? AND meal_plan_id = ?",
-        (day, side_id, plan_id)
+        "UPDATE meal_plan_sides SET day_of_week = ?, meal_type = ? WHERE id = ? AND meal_plan_id = ?",
+        (day, meal_type, side_id, plan_id)
     )
     db.commit()
     db.close()

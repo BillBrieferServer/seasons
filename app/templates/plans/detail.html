@@ -162,6 +162,11 @@
                             {% endfor %}
                             <option value="null" {% if side.day_of_week is none %}selected{% endif %}>—</option>
                         </select>
+                        <select name="meal_type" onchange="this.form.submit()">
+                            {% for mt in meal_types %}
+                            <option value="{{ mt }}" {% if side.meal_type == mt %}selected{% endif %}>{{ mt|capitalize }}</option>
+                            {% endfor %}
+                        </select>
                     </form>
                     <form method="post" action="/plans/{{ plan.id }}/remove-side/{{ side.id }}" style="display:inline">
                         <button type="submit" class="btn-remove">&times;</button>
@@ -215,6 +220,11 @@
                             {% endfor %}
                             <option value="null" {% if side.day_of_week is none %}selected{% endif %}>—</option>
                         </select>
+                        <select name="meal_type" onchange="this.form.submit()">
+                            {% for mt in meal_types %}
+                            <option value="{{ mt }}" {% if side.meal_type == mt %}selected{% endif %}>{{ mt|capitalize }}</option>
+                            {% endfor %}
+                        </select>
                     </form>
                     <form method="post" action="/plans/{{ plan.id }}/remove-side/{{ side.id }}" style="display:inline">
                         <button type="submit" class="btn-remove">&times;</button>
@@ -246,6 +256,11 @@
                 <select name="side_aisle" class="side-aisle-input">
                     {% for key, label in aisle_categories %}
                     <option value="{{ key }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <select name="side_meal_type" class="side-day-input">
+                    {% for mt in meal_types %}
+                    <option value="{{ mt }}" {% if mt == 'dinner' %}selected{% endif %}>{{ mt|capitalize }}</option>
                     {% endfor %}
                 </select>
                 <select name="side_day" class="side-day-input">
