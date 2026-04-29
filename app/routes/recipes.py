@@ -733,10 +733,44 @@ SCALABLE_UNITS = {
     "gallon", "gallons",
 }
 
+MODIFIER_WORDS = {
+    "large", "medium", "small", "extra",
+    "fresh", "dried", "frozen",
+    "ripe", "raw", "cooked", "uncooked",
+    "whole", "half",
+    "lean", "ground",
+    "chopped", "sliced", "diced", "minced", "shredded", "grated", "cubed",
+    "boneless", "skinless",
+    "hot", "cold", "warm",
+    "sweet", "sour",
+    "red", "green", "yellow", "white", "black",
+}
+
+NEVER_SCALE_WORDS = {
+    "minute", "minutes", "min", "mins",
+    "hour", "hours", "hr", "hrs",
+    "second", "seconds", "sec", "secs",
+    "day", "days",
+    "step", "steps",
+    "time", "times",
+    "side", "sides",
+    "inch", "inches",
+    "foot", "feet",
+    "centimeter", "centimeters", "cm",
+    "millimeter", "millimeters", "mm",
+    "degree", "degrees",
+    "percent",
+    "to",
+}
+
+STOP_WORDS = {"and", "or", "of", "the", "a", "an", "with", "for", "in", "on", "to"}
+
 _QTY_RE = re.compile(
     r"(?<![-\d./])"
     r"(\d+\s+\d+/\d+|\d+/\d+|\d+(?:\.\d+)?)"
-    r"(\s+)([A-Za-z]+)"
+    r"(\s+[a-zA-Z]+)"
+    r"(\s+[a-zA-Z]+)?"
+    r"(\s+[a-zA-Z]+)?"
     r"(?!\w)",
 )
 
@@ -755,26 +789,94 @@ def _parse_qty(s):
     return float(s)
 
 
-def scale_step_text(text):
+def _normalize_word(w):
+    w = w.lower()
+    if len(w) > 4 and w.endswith("ies"):
+        return w[:-3] + "y"
+    if len(w) > 4 and w.endswith("es"):
+        return w[:-2]
+    if len(w) > 3 and w.endswith("s"):
+        return w[:-1]
+    return w
+
+
+def _build_ingredient_tokens(names):
+    tokens = set()
+    if not names:
+        return tokens
+    skip = STOP_WORDS | MODIFIER_WORDS
+    for name in names:
+        if not name:
+            continue
+        clean = re.sub(r"\([^)]*\)", " ", name.lower())
+        clean = re.sub(r"[^a-z\s]", " ", clean)
+        for word in clean.split():
+            if len(word) >= 3 and word not in skip:
+                tokens.add(_normalize_word(word))
+    return tokens
+
+
+def scale_step_text(text, ingredient_tokens=None):
     if not text:
         return ""
+    ingredient_tokens = ingredient_tokens or set()
     escaped = html_module.escape(text)
 
+    def _is_ingredient(w):
+        return _normalize_word(w) in ingredient_tokens
+
     def repl(m):
-        num_str, sp, unit = m.group(1), m.group(2), m.group(3)
-        if unit.lower() not in SCALABLE_UNITS:
+        num_str = m.group(1)
+        w1f = m.group(2) or ""
+        w2f = m.group(3) or ""
+        w3f = m.group(4) or ""
+        w1 = w1f.strip().lower()
+        w2 = w2f.strip().lower() if w2f else ""
+        w3 = w3f.strip().lower() if w3f else ""
+
+        if w1 in NEVER_SCALE_WORDS:
             return m.group(0)
+
+        consume = 0
+        if w1 in SCALABLE_UNITS or _is_ingredient(w1):
+            consume = 1
+        elif w1 in MODIFIER_WORDS and w2:
+            if w2 in NEVER_SCALE_WORDS:
+                return m.group(0)
+            if w2 in SCALABLE_UNITS or _is_ingredient(w2):
+                consume = 2
+            elif w2 in MODIFIER_WORDS and w3:
+                if w3 in NEVER_SCALE_WORDS:
+                    return m.group(0)
+                if w3 in SCALABLE_UNITS or _is_ingredient(w3):
+                    consume = 3
+
+        if not consume:
+            return m.group(0)
+
         try:
             base = _parse_qty(num_str)
         except (ValueError, ZeroDivisionError):
             return m.group(0)
-        full = m.group(0)
-        return (
+
+        if consume == 1:
+            full = num_str + w1f
+            leftover = w2f + w3f
+        elif consume == 2:
+            full = num_str + w1f + w2f
+            leftover = w3f
+        else:
+            full = num_str + w1f + w2f + w3f
+            leftover = ""
+
+        unit_text = full[len(num_str):].lstrip()
+        span = (
             f'<span class="scale-amount" '
             f'data-base="{base}" '
-            f'data-unit="{unit}" '
+            f'data-unit="{unit_text}" '
             f'data-orig="{full}">{full}</span>'
         )
+        return span + leftover
 
     return _QTY_RE.sub(repl, escaped)
 
@@ -801,10 +903,11 @@ async def cooking_mode(request: Request, recipe_id: int, servings: Optional[int]
 
     db.close()
 
+    ingredient_tokens = _build_ingredient_tokens([ing["name"] for ing in ingredients])
     steps = []
     for s in steps_raw:
         d = dict(s)
-        d["instruction_html"] = scale_step_text(s["instruction"])
+        d["instruction_html"] = scale_step_text(s["instruction"], ingredient_tokens)
         steps.append(d)
 
     return templates.TemplateResponse("recipes/cooking.html", {
