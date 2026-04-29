@@ -142,7 +142,7 @@
                             <option value="{{ mt }}" {% if item.meal_type == mt %}selected{% endif %}>{{ mt|capitalize }}</option>
                             {% endfor %}
                         </select>
-                        <input type="number" name="servings" value="{{ item.servings }}" min="1" max="8" class="servings-input" onchange="this.form.submit()">
+                        <input type="number" name="servings" value="{{ item.servings }}" min="1" max="16" class="servings-input" onchange="this.form.submit()">
                     </form>
                     <form method="post" action="/plans/{{ plan.id }}/remove-item/{{ item.id }}" style="display:inline">
                         <button type="submit" class="btn-remove">&times;</button>
@@ -200,7 +200,7 @@
                             <option value="{{ mt }}" {% if item.meal_type == mt %}selected{% endif %}>{{ mt|capitalize }}</option>
                             {% endfor %}
                         </select>
-                        <input type="number" name="servings" value="{{ item.servings }}" min="1" max="8" class="servings-input" onchange="this.form.submit()">
+                        <input type="number" name="servings" value="{{ item.servings }}" min="1" max="16" class="servings-input" onchange="this.form.submit()">
                     </form>
                     <form method="post" action="/plans/{{ plan.id }}/remove-item/{{ item.id }}" style="display:inline">
                         <button type="submit" class="btn-remove">&times;</button>

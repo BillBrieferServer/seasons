@@ -180,9 +180,13 @@ async def add_recipe_to_plan(request: Request, plan_id: int):
     form = await request.form()
     recipe_id = int(form.get("recipe_id"))
     db = get_db()
+    row = db.execute("SELECT base_servings FROM recipes WHERE id = ?", (recipe_id,)).fetchone()
+    servings = row["base_servings"] if row and row["base_servings"] else 2
+    if servings > 16:
+        servings = 16
     db.execute(
-        "INSERT INTO meal_plan_items (meal_plan_id, recipe_id, day_of_week, meal_type, servings) VALUES (?, ?, NULL, 'dinner', 2)",
-        (plan_id, recipe_id)
+        "INSERT INTO meal_plan_items (meal_plan_id, recipe_id, day_of_week, meal_type, servings) VALUES (?, ?, NULL, 'dinner', ?)",
+        (plan_id, recipe_id, servings)
     )
     db.commit()
     db.close()
@@ -211,8 +215,8 @@ async def update_plan_item(request: Request, plan_id: int, item_id: int):
     servings = int(form.get("servings", 2))
     if servings < 1:
         servings = 1
-    if servings > 8:
-        servings = 8
+    if servings > 16:
+        servings = 16
     meal_type = form.get("meal_type", "dinner")
     db = get_db()
     db.execute(
