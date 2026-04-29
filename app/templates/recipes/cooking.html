@@ -338,7 +338,7 @@
         <div class="step-item" onclick="this.classList.toggle('completed')">
             <div class="step-number"><span class="step-num-text">{{ loop.index }}</span></div>
             <div class="step-card">
-                <p class="step-text">{{ step.instruction }}</p>
+                <p class="step-text">{{ step.instruction_html|safe }}</p>
             </div>
         </div>
         {% endfor %}
@@ -374,12 +374,28 @@ function updateIngredients() {
     });
 }
 
+function updateStepAmounts() {
+    document.querySelectorAll('.scale-amount').forEach(el => {
+        const base = parseFloat(el.dataset.base);
+        if (isNaN(base)) return;
+        const orig = el.dataset.orig || '';
+        if (activeServings === baseServings) {
+            el.textContent = orig;
+            return;
+        }
+        const unit = el.dataset.unit || '';
+        const scaled = base * (activeServings / baseServings);
+        el.textContent = formatAmount(scaled) + (unit ? ' ' + unit : '');
+    });
+}
+
 // Serving adjuster
 document.getElementById('serv-minus').addEventListener('click', () => {
     if (activeServings > 1) {
         activeServings--;
         document.getElementById('serv-count').textContent = activeServings;
         updateIngredients();
+        updateStepAmounts();
         history.replaceState(null, '', location.pathname + '?servings=' + activeServings);
     }
 });
@@ -388,6 +404,7 @@ document.getElementById('serv-plus').addEventListener('click', () => {
         activeServings++;
         document.getElementById('serv-count').textContent = activeServings;
         updateIngredients();
+        updateStepAmounts();
         history.replaceState(null, '', location.pathname + '?servings=' + activeServings);
     }
 });
@@ -407,6 +424,7 @@ document.addEventListener('visibilitychange', () => {
 
 // Init
 updateIngredients();
+updateStepAmounts();
 requestWakeLock();
 </script>
 

@@ -7,6 +7,8 @@ import os
 import json
 import base64
 import time
+import re
+import html as html_module
 from app.database.db import get_db
 from app.config import AISLE_CATEGORIES
 
@@ -713,6 +715,70 @@ def format_cook_amount(amount):
     return f"{amount:.1f}".rstrip('0').rstrip('.')
 
 
+
+SCALABLE_UNITS = {
+    "cup", "cups",
+    "tablespoon", "tablespoons", "tbsp", "tbsps", "tbs",
+    "teaspoon", "teaspoons", "tsp", "tsps",
+    "ounce", "ounces", "oz",
+    "pound", "pounds", "lb", "lbs",
+    "gram", "grams",
+    "kilogram", "kilograms", "kg",
+    "milliliter", "milliliters", "ml",
+    "liter", "liters",
+    "pinch", "pinches",
+    "dash", "dashes",
+    "quart", "quarts",
+    "pint", "pints",
+    "gallon", "gallons",
+}
+
+_QTY_RE = re.compile(
+    r"(?<![-\d./])"
+    r"(\d+\s+\d+/\d+|\d+/\d+|\d+(?:\.\d+)?)"
+    r"(\s+)([A-Za-z]+)"
+    r"(?!\w)",
+)
+
+
+def _parse_qty(s):
+    s = s.strip()
+    if " " in s:
+        whole, frac = s.split(None, 1)
+        if "/" in frac:
+            n, d = frac.split("/")
+            return float(whole) + float(n) / float(d)
+        return float(whole) + float(frac)
+    if "/" in s:
+        n, d = s.split("/")
+        return float(n) / float(d)
+    return float(s)
+
+
+def scale_step_text(text):
+    if not text:
+        return ""
+    escaped = html_module.escape(text)
+
+    def repl(m):
+        num_str, sp, unit = m.group(1), m.group(2), m.group(3)
+        if unit.lower() not in SCALABLE_UNITS:
+            return m.group(0)
+        try:
+            base = _parse_qty(num_str)
+        except (ValueError, ZeroDivisionError):
+            return m.group(0)
+        full = m.group(0)
+        return (
+            f'<span class="scale-amount" '
+            f'data-base="{base}" '
+            f'data-unit="{unit}" '
+            f'data-orig="{full}">{full}</span>'
+        )
+
+    return _QTY_RE.sub(repl, escaped)
+
+
 @router.get("/recipes/{recipe_id}/cook", response_class=HTMLResponse)
 async def cooking_mode(request: Request, recipe_id: int, servings: Optional[int] = None):
     db = get_db()
@@ -728,12 +794,18 @@ async def cooking_mode(request: Request, recipe_id: int, servings: Optional[int]
         ORDER BY sort_order
     """, (recipe_id,)).fetchall()
 
-    steps = db.execute("""
+    steps_raw = db.execute("""
         SELECT * FROM recipe_steps WHERE recipe_id = ?
         ORDER BY step_number
     """, (recipe_id,)).fetchall()
 
     db.close()
+
+    steps = []
+    for s in steps_raw:
+        d = dict(s)
+        d["instruction_html"] = scale_step_text(s["instruction"])
+        steps.append(d)
 
     return templates.TemplateResponse("recipes/cooking.html", {
         "request": request,
