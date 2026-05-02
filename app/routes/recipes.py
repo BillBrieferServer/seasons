@@ -621,7 +621,7 @@ def extract_recipe_from_pdf(pdf_bytes):
 
     try:
         message = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=4096,
             messages=[{
                 "role": "user",
@@ -1036,7 +1036,7 @@ def extract_recipes_from_web(text_content: str, schema_recipes: list) -> list:
 
     try:
         message = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=16000,
             messages=[{
                 "role": "user",
