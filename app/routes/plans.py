@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import date, timedelta
 from app.database.db import get_db
 from app.config import AISLE_CATEGORIES
+from app.routes.recipes import scale_step_text, _build_ingredient_tokens
 
 router = APIRouter()
 
@@ -377,12 +378,19 @@ async def cooking_mode_from_plan(request: Request, plan_id: int, item_id: int):
         ORDER BY sort_order
     """, (item["recipe_id"],)).fetchall()
 
-    steps = db.execute("""
+    steps_raw = db.execute("""
         SELECT * FROM recipe_steps WHERE recipe_id = ?
         ORDER BY step_number
     """, (item["recipe_id"],)).fetchall()
 
     db.close()
+
+    ingredient_tokens = _build_ingredient_tokens([ing["name"] for ing in ingredients])
+    steps = []
+    for s in steps_raw:
+        d = dict(s)
+        d["instruction_html"] = scale_step_text(s["instruction"], ingredient_tokens)
+        steps.append(d)
 
     return templates.TemplateResponse("recipes/cooking.html", {
         "request": request,
