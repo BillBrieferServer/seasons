@@ -101,6 +101,11 @@ async def service_area(request: Request):
     return render("public/service_area.html", request, "/service-area")
 
 
+@router.get("/resources/aging-parent-refuses-help", response_class=HTMLResponse)
+async def resource_parent_help(request: Request):
+    return render("public/resource_parent_help.html", request, "/resources")
+
+
 @router.get("/contact", response_class=HTMLResponse)
 async def contact(request: Request):
     return render("public/contact.html", request, "/contact", sent=False)
@@ -157,7 +162,8 @@ async def robots():
 
 
 SITEMAP_PATHS = ["/", "/services", "/credentials", "/story",
-                 "/service-area", "/contact"]
+                 "/service-area", "/resources",
+                 "/resources/aging-parent-refuses-help", "/contact"]
 
 
 def sitemap_xml() -> str:

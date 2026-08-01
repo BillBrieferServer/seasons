@@ -209,3 +209,14 @@ textarea { min-height: 7rem; resize: vertical; }
 .photo-wide { width: 100%; height: auto; display: block; }
 figure { margin: 0; }
 figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
+
+/* ---------------------------------------------------------------- prose -- */
+.prose h2 { margin: 2.75rem 0 1rem; font-size: clamp(1.3rem, 3vw, 1.6rem); }
+.prose p { margin-bottom: 1.35em; }
+.prose ul { margin: 0 0 1.6em; padding-left: 1.2rem; }
+.prose ul li { padding: 0.35rem 0; }
+.prose .note { margin: 2rem 0; }
+.eyebrow a { color: var(--sage-dark); text-decoration: none; }
+.eyebrow a:hover { color: var(--rust); }
+.svc h3 a { color: var(--black); text-decoration: none; }
+.svc h3 a:hover { color: var(--rust); }
