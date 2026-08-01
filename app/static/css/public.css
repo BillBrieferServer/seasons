@@ -78,10 +78,13 @@ p:last-child { margin-bottom: 0; }
 
 .callbtn {
   display: inline-block; background: var(--rust); color: #fff !important;
-  text-decoration: none; padding: 0.6rem 1.1rem; border-radius: 2px;
+  text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 2px;
   font-size: 0.95rem; white-space: nowrap;
 }
 .callbtn:hover { background: var(--rust-dark); color: #fff !important; }
+/* .nav a (0,1,1) outranks .callbtn (0,1,0) -- must qualify or the padding is ignored */
+.nav a.callbtn { padding: 0.8rem 1.5rem; border-bottom: 0; }
+.nav a.callbtn:hover { border-bottom: 0; }
 
 @media (max-width: 60rem) {
   .header-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
@@ -109,7 +112,7 @@ hr.rule { border: 0; border-top: 1px solid var(--gray-line); margin: 0; }
 .hero-actions { margin-top: 2.2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
 
 .btn {
-  display: inline-block; padding: 0.85rem 1.6rem; border-radius: 2px;
+  display: inline-block; padding: 1rem 1.9rem; border-radius: 2px;
   text-decoration: none; font-size: 1rem;
 }
 .btn-primary { background: var(--rust); color: #fff !important; }
