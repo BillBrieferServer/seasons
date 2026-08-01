@@ -39,11 +39,17 @@ def send_inquiry(row: dict) -> bool:
         ) % row
 
         msg = EmailMessage()
-        msg["Subject"] = "Website inquiry - %s" % (row.get("name") or "no name")
-        msg["From"] = FROM_EMAIL
+        # Fixed, filterable subject prefix so Julie always recognises these.
+        msg["Subject"] = "[Seasons Website] New inquiry - %s" % (
+            row.get("name") or "no name")
+        # Display name matters more than the address -- it is what her inbox shows.
+        msg["From"] = "Seasons Care Services Website <%s>" % FROM_EMAIL
         msg["To"] = NOTIFY_EMAIL
-        if row.get("email"):
-            msg["Reply-To"] = row["email"]
+        # NOTE: deliberately no Reply-To. Pointing it at the visitor's address makes
+        # From and Reply-To disagree across domains, which is a spam signal and made
+        # the inbox show a stranger's address instead of a consistent sender.
+        # Their phone and email are in the body.
+        msg["X-Seasons-Source"] = "public-contact-form"
         msg.set_content(body)
 
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as s:
