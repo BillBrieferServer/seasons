@@ -74,6 +74,16 @@
   }
 }
 </script>
+{% if not draft and ga_id %}
+<!-- Google Analytics 4 -- live site only, so preview traffic never pollutes her data -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ ga_id }}');
+</script>
+{% endif %}
 </head>
 <body>
 {% if draft %}<div class="draftbar">Draft preview &mdash; not visible to Google &mdash; nothing here is public yet</div>{% endif %}

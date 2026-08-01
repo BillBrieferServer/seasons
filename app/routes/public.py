@@ -17,6 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 BASE_URL = os.environ.get("BASE_URL", "https://seasonscareservices.com")
+GA_ID = os.environ.get("GA_MEASUREMENT_ID", "G-ER2SNTDBDP")
 DRAFT = os.environ.get("PUBLIC_DRAFT", "1") == "1"
 PREFIX = "/preview" if DRAFT else ""
 
@@ -54,6 +55,7 @@ def ctx(request: Request, page: str, **extra):
         # canonical always points at the LIVE url, never the /preview one
         "canonical": BASE_URL + (page or "/"),
         "base_url": BASE_URL,
+        "ga_id": GA_ID,
     }
     data.update(extra)
     return data
