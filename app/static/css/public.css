@@ -176,12 +176,19 @@ textarea { min-height: 7rem; resize: vertical; }
 .sent { border-left: 3px solid var(--rust); padding-left: 1.2rem; }
 
 /* --------------------------------------------------------------- footer -- */
-.site-footer { border-top: 1px solid var(--gray-line); padding: 3rem 0; font-size: 0.92rem; color: var(--muted); }
-.site-footer a { color: var(--muted); }
+.site-footer {
+  background: var(--sage-dark);          /* #4F5D55 -- 6.9:1 with white, unlike raw sage */
+  color: #D6DBD7;                        /* 4.95:1 on that ground */
+  padding: 4rem 0 3rem;
+  font-size: 0.92rem;
+}
+.site-footer strong { color: #fff; }
+.site-footer a { color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.35); }
+.site-footer a:hover { color: #fff; border-bottom-color: #fff; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; }
 @media (max-width: 52rem) { .footer-grid { grid-template-columns: 1fr; } }
 .site-footer .plain li { border-bottom: 0; padding: 0.2rem 0; }
-.legal { margin-top: 2.5rem; font-size: 0.82rem; color: var(--sage-dark); }
+.legal { margin-top: 3rem; font-size: 0.82rem; color: #CFD5D1; }
 
 /* ---------------------------------------------------------------- photos -- */
 .photo { width: 100%; height: auto; display: block; }
