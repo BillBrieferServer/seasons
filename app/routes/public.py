@@ -58,6 +58,9 @@ def render(name: str, request: Request, page: str, **extra):
     resp = templates.TemplateResponse(name, ctx(request, page, **extra))
     if DRAFT:
         resp.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive, nosnippet"
+        # while drafting, never let a browser serve Julie a stale page
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        resp.headers["Pragma"] = "no-cache"
     return resp
 
 
