@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% if draft %}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{% endif %}
+<title>{% block title %}{{ b.name }}{% endblock %}</title>
+<meta name="description" content="{% block description %}Non-medical companion care in Pocatello and Chubbuck, Idaho. Rides to appointments, errands, healthy meals, light housekeeping and good company.{% endblock %}">
+<link rel="stylesheet" href="/static/css/public.css?v=1">
+</head>
+<body>
+{% if draft %}<div class="draftbar">Draft preview &mdash; not visible to Google &mdash; nothing here is public yet</div>{% endif %}
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{{ p }}/"><img src="/static/images/logo.png" alt="{{ b.name }} &mdash; {{ b.tagline }}"></a>
+    <nav class="nav">
+      {% for href, label in nav %}
+        <a href="{{ p }}{{ href if href else '/' }}"{% if page == href %} class="on"{% endif %}>{{ label }}</a>
+      {% endfor %}
+      <a class="callbtn" href="tel:{{ b.phone_href }}">{{ b.phone }}</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <strong style="color:var(--black)">{{ b.name }}</strong><br>
+      {{ b.tagline }}<br><br>
+      Non-medical companion care serving<br>{{ b.area }}
+    </div>
+    <div>
+      <ul class="plain">
+        <li><a href="tel:{{ b.phone_href }}">{{ b.phone }}</a></li>
+        <li><a href="mailto:{{ b.email }}">{{ b.email }}</a></li>
+      </ul>
+    </div>
+    <div>
+      <ul class="plain">
+        {% for href, label in nav %}<li><a href="{{ p }}{{ href if href else '/' }}">{{ label }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="wrap legal">
+    {{ b.legal }}, doing business as {{ b.name }}. Pocatello, Idaho.
+    Seasons Care Services is a non-medical companion care service and does not provide nursing or medical care.
+  </div>
+</footer>
+</body>
+</html>

@@ -165,6 +165,18 @@ def init_db(path: str):
             FOREIGN KEY (client_id) REFERENCES clients(id),
             FOREIGN KEY (recipe_id) REFERENCES recipes(id)
         );
+
+        CREATE TABLE IF NOT EXISTS contact_submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            phone TEXT,
+            email TEXT,
+            care_for TEXT,
+            message TEXT,
+            best_time TEXT,
+            status TEXT NOT NULL DEFAULT 'new',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     """)
     conn.close()
     print(f"Database initialized at {path}")

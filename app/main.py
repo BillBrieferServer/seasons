@@ -11,6 +11,7 @@ from app.routes.shopping import router as shopping_router
 from app.routes.clients import router as clients_router
 from app.routes.auth import router as auth_router, get_current_user, generate_csrf_token, make_csrf_signature
 from app.routes.admin import router as admin_router
+from app.routes.public import router as public_router, PREFIX as PUBLIC_PREFIX
 
 app = FastAPI(title="Seasons Care Services", version="1.0.0")
 
@@ -18,6 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# Public marketing site (no login required)
+app.include_router(public_router)
 
 # Auth routes (no login required)
 app.include_router(auth_router)
@@ -29,7 +33,14 @@ app.include_router(shopping_router)
 app.include_router(clients_router)
 app.include_router(admin_router)
 
-PUBLIC_PATHS = {"/login", "/setup-pin", "/pin", "/health", "/static"}
+PUBLIC_PATHS = {"/login", "/setup-pin", "/pin", "/health", "/static",
+                "/robots.txt"}
+if PUBLIC_PREFIX:
+    PUBLIC_PATHS.add(PUBLIC_PREFIX)
+else:
+    # live mode: the marketing pages are the public site
+    PUBLIC_PATHS.update({"/services", "/credentials", "/story",
+                         "/resources", "/contact"})
 
 
 @app.middleware("http")
@@ -63,3 +74,9 @@ async def home():
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "seasons-care-services"}
+
+@app.get("/robots.txt", include_in_schema=False)
+async def robots_root():
+    """Crawlers only read robots.txt at the domain root, never under a prefix."""
+    from app.routes.public import robots as _robots
+    return await _robots()

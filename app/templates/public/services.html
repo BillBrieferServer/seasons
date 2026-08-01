@@ -1,0 +1,139 @@
+{% extends "public/base.html" %}
+{% block title %}Services &amp; Rates | {{ b.name }}{% endblock %}
+{% block description %}Companion care services in Pocatello and Chubbuck: transportation, errands, meal planning and preparation, companionship, light housekeeping, home management and caregiver respite. $25 an hour.{% endblock %}
+
+{% block content %}
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Services</p>
+    <h1>What I do.</h1>
+    <p class="lead narrow" style="margin-top:1.5rem">Personal companion care and support for
+    seniors who want to stay independent in their own homes. Every arrangement is
+    a little different &mdash; take what is useful and leave the rest.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap grid2">
+    <div class="svc"><h3>Transportation &amp; accompaniment</h3>
+      <ul>
+        <li>Medical appointments &mdash; doctor, dentist, specialists, lab work, physical therapy</li>
+        <li>Personal appointments &mdash; hair salon, shopping</li>
+        <li>Social activities &mdash; church, senior center, visiting friends and family</li>
+        <li>Special events &mdash; grandchildren's activities, family gatherings</li>
+      </ul>
+      <p style="margin-top:1rem;font-size:0.95rem;color:var(--muted)">I go in with you if you'd like,
+      wait through the appointment, and take notes if that's helpful.</p>
+    </div>
+    <div class="svc"><h3>Errands &amp; shopping</h3>
+      <ul>
+        <li>Grocery shopping &mdash; with you or for you</li>
+        <li>Prescription pickup</li>
+        <li>Post office, bank, dry cleaning</li>
+        <li>Returns and exchanges</li>
+        <li>Pet supplies</li>
+      </ul>
+    </div>
+    <div class="svc"><h3>Healthy eating support</h3>
+      <ul>
+        <li>Weekly meal planning &mdash; heart-healthy, diabetic-friendly, gluten-free, or simply what you like</li>
+        <li>Grocery shopping with nutrition guidance</li>
+        <li>Meal preparation and batch cooking</li>
+        <li>Help with special dietary needs</li>
+      </ul>
+      <p style="margin-top:1rem;font-size:0.95rem;color:var(--muted)">This is the part most
+      caregivers don't offer. It comes from eight years of health and wellness coaching.</p>
+    </div>
+    <div class="svc"><h3>Companionship</h3>
+      <ul>
+        <li>Friendly conversation and visiting</li>
+        <li>Games, puzzles, reading together</li>
+        <li>Outings &mdash; coffee, lunch, walks, scenic drives</li>
+        <li>Technology help &mdash; phone, tablet, video calls with family, email</li>
+      </ul>
+    </div>
+    <div class="svc"><h3>Light housekeeping</h3>
+      <ul>
+        <li>Dishes, laundry, tidying</li>
+        <li>Changing linens</li>
+        <li>Light cleaning and organizing</li>
+        <li>Refrigerator and pantry organization</li>
+      </ul>
+    </div>
+    <div class="svc"><h3>Home management</h3>
+      <ul>
+        <li>Waiting for service providers &mdash; plumber, cable, repairs</li>
+        <li>Mail sorting and organization</li>
+        <li>Medication reminders &mdash; a visual check only, never administering</li>
+        <li>Pet care &mdash; feeding, walking, vet visits</li>
+      </ul>
+    </div>
+    <div class="svc"><h3>Caregiver respite</h3>
+      <ul>
+        <li>A real break for the family caregiver</li>
+        <li>Scheduled regular relief or occasional coverage</li>
+        <li>Updates for family members who live out of town</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <p class="eyebrow">Being clear</p>
+    <h2>What I don't provide.</h2>
+    <p style="margin-top:1.5rem">To keep you safe and to stay inside the right boundaries,
+    I do not provide:</p>
+    <ul class="plain">
+      <li><strong>Medical or nursing care</strong> &mdash; administering medication, wound care,
+      bathing, dressing or toileting assistance</li>
+      <li><strong>Heavy housework</strong> &mdash; deep cleaning, moving furniture, yard work, ladders</li>
+      <li><strong>Financial management</strong> &mdash; managing accounts or signing checks</li>
+    </ul>
+    <p style="margin-top:1.5rem">If you need any of that, tell me anyway &mdash; I am glad to
+    help you find someone qualified.</p>
+  </div>
+</section>
+
+<section id="rates">
+  <div class="wrap grid2">
+    <div>
+      <p class="eyebrow">Rates</p>
+      <h2>No mystery pricing.</h2>
+      <p style="margin-top:1.5rem" class="lead">You should be able to work out what this
+      costs before you call. Here it is.</p>
+    </div>
+    <div>
+      <table class="rates">
+        <tr><th>Companion care</th><td>$25 / hour</td></tr>
+        <tr><th>Minimum visit</th><td>2 hours</td></tr>
+        <tr><th>Mileage, when driving</th><td>$0.725 / mile</td></tr>
+      </table>
+      <p style="margin-top:1.5rem;font-size:0.95rem;color:var(--muted)">
+        Payment is due at the time of service. Cash, check and cards accepted.
+        Groceries and supplies are billed at cost, with receipts.
+        I ask for 24 hours' notice to cancel or reschedule.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <p class="eyebrow">Paying for care</p>
+    <h2>Who usually pays for this?</h2>
+    <p style="margin-top:1.5rem">Most families pay privately, out of pocket. Two other
+    sources are worth checking before you assume you can't afford help:</p>
+    <ul class="plain">
+      <li><strong>VA Aid &amp; Attendance.</strong> Veterans and surviving spouses may qualify
+      for a monthly benefit that helps cover this kind of care.</li>
+      <li><strong>Long-term care insurance.</strong> Some policies cover companion care.
+      It is worth a call to your provider to ask.</li>
+    </ul>
+    <p class="note" style="margin-top:1.5rem">Medicare does not cover non-medical
+    companion care. Anyone who tells you otherwise is mistaken.</p>
+  </div>
+</section>
+{% endblock %}

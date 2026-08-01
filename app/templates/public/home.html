@@ -1,0 +1,133 @@
+{% extends "public/base.html" %}
+{% block title %}Companion Care in Pocatello &amp; Chubbuck | {{ b.name }}{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="wrap">
+    <div class="grid2">
+      <div>
+        <p class="eyebrow">Companion care &middot; Pocatello &amp; Chubbuck</p>
+        <h1>A little help makes all the difference.</h1>
+        <p class="lead">Rides to appointments, errands run, healthy meals in the fridge,
+        and someone to sit and talk with. Everyday support that helps you stay in
+        your own home &mdash; from one person you get to know by name.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+          <a class="btn btn-quiet" href="{{ p }}/contact">Ask a question</a>
+        </div>
+      </div>
+      <div class="ph portrait">PHOTO OF JULIE<br>goes here</div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="tight">
+  <div class="wrap">
+    <ul class="trust">
+      <li>Background checked</li>
+      <li>CPR / First Aid / AED certified</li>
+      <li>Fully insured</li>
+      <li>Certified health &amp; wellness coach</li>
+    </ul>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap grid2">
+    <div>
+      <p class="eyebrow">You may have noticed</p>
+      <p class="pull">The small things are getting harder &mdash; and nobody wants to make a fuss about it.</p>
+    </div>
+    <div>
+      <ul class="plain">
+        <li>The mail is piling up.</li>
+        <li>There is more expired food in the refrigerator than fresh.</li>
+        <li>Appointments get missed because asking for a ride feels like a burden.</li>
+        <li>Driving after dark is not what it used to be.</li>
+        <li>The house that was always tidy now feels like a lot.</li>
+      </ul>
+      <p style="margin-top:1.5rem" class="lead">This is not failure. It is simply a new season &mdash;
+      and the right kind of help makes it an easier one.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">What I help with</p>
+    <h2>Everyday support, arranged around you.</h2>
+    <div class="grid3" style="margin-top:2.5rem">
+      <div class="svc"><h3>Getting places</h3>
+        <ul><li>Doctor and dentist visits</li><li>Lab work and therapy</li><li>Church and the senior center</li><li>Family events</li></ul></div>
+      <div class="svc"><h3>Errands</h3>
+        <ul><li>Groceries, with you or for you</li><li>Prescription pickup</li><li>Bank and post office</li><li>Returns and dry cleaning</li></ul></div>
+      <div class="svc"><h3>Eating well</h3>
+        <ul><li>Weekly meal planning</li><li>Shopping with nutrition in mind</li><li>Meal prep and batch cooking</li><li>Special diets</li></ul></div>
+      <div class="svc"><h3>Companionship</h3>
+        <ul><li>Conversation and visiting</li><li>Games, puzzles, reading</li><li>Coffee, lunch, a drive</li><li>Help with the phone or tablet</li></ul></div>
+      <div class="svc"><h3>Around the house</h3>
+        <ul><li>Dishes and laundry</li><li>Tidying and fresh linens</li><li>Refrigerator and pantry</li><li>Waiting for the repairman</li></ul></div>
+      <div class="svc"><h3>Family respite</h3>
+        <ul><li>A break for the caregiver</li><li>Regular scheduled relief</li><li>Updates for family out of town</li></ul></div>
+    </div>
+    <p style="margin-top:2.5rem"><a href="{{ p }}/services">See everything I do &mdash; and what I don't do &rarr;</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap grid2">
+    <div>
+      <p class="eyebrow">Straight answer</p>
+      <h2>$25 an hour.</h2>
+      <p class="lead" style="margin-top:1rem">Two-hour minimum. $0.725 a mile when driving is involved.
+      No packages to decode and no pressure to commit.</p>
+      <p><a href="{{ p }}/services#rates">See full rates &rarr;</a></p>
+    </div>
+    <div>
+      <p class="note">Most home care agencies in Idaho will not put a price on their
+      website. I would rather you know before you pick up the phone.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div>
+      <p class="eyebrow">Why families choose me</p>
+      <ul class="plain">
+        <li><strong>It is one person, not a rotation.</strong> You get to know me, and I get to know you.</li>
+        <li><strong>Nutrition is part of the job.</strong> Eight years as a health and wellness coach comes with me through the door.</li>
+        <li><strong>I live here.</strong> Same stores, same streets, same winters.</li>
+        <li><strong>I come alongside &mdash; I don't take over.</strong> Independence is the point.</li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow">What people say</p>
+      <div class="ph">TESTIMONIALS<br>1&ndash;2 real client quotes go here</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">Getting started</p>
+    <h2>Three simple steps.</h2>
+    <ol class="numbered" style="margin-top:2.5rem;max-width:38rem">
+      <li><strong>A free conversation.</strong> We talk about what is going on and
+      what would actually help. No pressure and no obligation.</li>
+      <li><strong>We meet in person.</strong> I come to the home so we can meet
+      face to face and see how we get along.</li>
+      <li><strong>We set a schedule.</strong> Something regular works best, and we
+      can always adjust as things change.</li>
+    </ol>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+      <a class="btn btn-quiet" href="{{ p }}/contact">Send a message instead</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
