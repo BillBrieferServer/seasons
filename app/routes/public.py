@@ -11,6 +11,7 @@ from fastapi.templating import Jinja2Templates
 from pathlib import Path
 
 from app.database.db import get_db
+from app.mailer import send_inquiry
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
@@ -109,16 +110,28 @@ async def contact_post(
     if website.strip():
         return RedirectResponse(url=PREFIX + "/contact?sent=1", status_code=303)
 
+    row = {
+        "name": name.strip(),
+        "phone": phone.strip(),
+        "email": email.strip(),
+        "care_for": care_for.strip(),
+        "message": message.strip(),
+        "best_time": best_time.strip(),
+    }
+
+    # Store first -- the database is the system of record, email is a convenience.
     conn = get_db()
     conn.execute(
         """INSERT INTO contact_submissions
            (name, phone, email, care_for, message, best_time)
            VALUES (?, ?, ?, ?, ?, ?)""",
-        (name.strip(), phone.strip(), email.strip(),
-         care_for.strip(), message.strip(), best_time.strip()),
+        (row["name"], row["phone"], row["email"],
+         row["care_for"], row["message"], row["best_time"]),
     )
     conn.commit()
     conn.close()
+
+    send_inquiry(row)
     return RedirectResponse(url=PREFIX + "/contact?sent=1", status_code=303)
 
 
