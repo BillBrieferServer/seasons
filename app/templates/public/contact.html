@@ -26,8 +26,9 @@
       {% if request.query_params.get('sent') %}
         <div class="sent">
           <h2>Thank you.</h2>
-          <p style="margin-top:1rem">I'll get back to you shortly. If it's urgent,
-          please call or text <a href="tel:{{ b.phone_href }}">{{ b.phone }}</a>.</p>
+          <p style="margin-top:1rem">Your message came through. I'll get back to you
+          shortly. If it's urgent, please call or text
+          <a href="tel:{{ b.phone_href }}">{{ b.phone }}</a>.</p>
         </div>
       {% else %}
         <form class="inquiry" method="post" action="{{ p }}/contact">
