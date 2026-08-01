@@ -125,10 +125,21 @@ hr.rule { border: 0; border-top: 1px solid var(--gray-line); margin: 0; }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 2.75rem); }
 @media (max-width: 52rem) { .grid2, .grid3 { grid-template-columns: 1fr; } }
 
-.trust { display: flex; flex-wrap: wrap; gap: 0 2.5rem; list-style: none; margin: 0; padding: 0; }
-.trust li { font-size: 0.95rem; color: var(--muted); padding: 0.3rem 0; }
-.trust li::before { content: ""; display: inline-block; width: 7px; height: 7px;
-  background: var(--sage); margin-right: 0.6rem; vertical-align: 0.15em; }
+.band-rust { background: var(--rust); color: #fff; }
+
+.trust {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.4rem 3rem; list-style: none; margin: 0; padding: 0;
+}
+.trust li { font-size: 1.12rem; color: #fff; padding: 0.35rem 0; }
+.trust li::before {
+  content: ""; display: inline-block; width: 11px; height: 11px;
+  background: #fff; margin-right: 0.75rem; vertical-align: 0.05em;
+}
+@media (max-width: 52rem) {
+  .trust { justify-content: flex-start; gap: 0.1rem 2rem; }
+  .trust li { font-size: 1.05rem; }
+}
 
 .plain { list-style: none; margin: 0; padding: 0; }
 .plain li { padding: 0.55rem 0; border-bottom: 1px solid var(--gray-line); }
