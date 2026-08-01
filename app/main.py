@@ -11,7 +11,8 @@ from app.routes.shopping import router as shopping_router
 from app.routes.clients import router as clients_router
 from app.routes.auth import router as auth_router, get_current_user, generate_csrf_token, make_csrf_signature
 from app.routes.admin import router as admin_router
-from app.routes.public import router as public_router, PREFIX as PUBLIC_PREFIX
+from app.routes.public import (router as public_router,
+                               PREFIX as PUBLIC_PREFIX, sitemap_xml)
 
 app = FastAPI(title="Seasons Care Services", version="1.0.0")
 
@@ -34,13 +35,13 @@ app.include_router(clients_router)
 app.include_router(admin_router)
 
 PUBLIC_PATHS = {"/login", "/setup-pin", "/pin", "/health", "/static",
-                "/robots.txt"}
+                "/robots.txt", "/sitemap.xml"}
 if PUBLIC_PREFIX:
     PUBLIC_PATHS.add(PUBLIC_PREFIX)
 else:
     # live mode: the marketing pages are the public site
     PUBLIC_PATHS.update({"/services", "/credentials", "/story",
-                         "/resources", "/contact"})
+                         "/resources", "/service-area", "/contact"})
 
 
 @app.middleware("http")
@@ -80,3 +81,10 @@ async def robots_root():
     """Crawlers only read robots.txt at the domain root, never under a prefix."""
     from app.routes.public import robots as _robots
     return await _robots()
+
+
+@app.get("/sitemap.xml", include_in_schema=False)
+async def sitemap_root():
+    """Search engines only read the sitemap at the domain root."""
+    from fastapi.responses import Response
+    return Response(content=sitemap_xml(), media_type="application/xml")

@@ -16,6 +16,7 @@ from app.mailer import send_inquiry
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
+BASE_URL = os.environ.get("BASE_URL", "https://seasonscareservices.com")
 DRAFT = os.environ.get("PUBLIC_DRAFT", "1") == "1"
 PREFIX = "/preview" if DRAFT else ""
 
@@ -50,6 +51,9 @@ def ctx(request: Request, page: str, **extra):
         "p": PREFIX,
         "page": page,
         "draft": DRAFT,
+        # canonical always points at the LIVE url, never the /preview one
+        "canonical": BASE_URL + (page or "/"),
+        "base_url": BASE_URL,
     }
     data.update(extra)
     return data
@@ -88,6 +92,11 @@ async def story(request: Request):
 @router.get("/resources", response_class=HTMLResponse)
 async def resources(request: Request):
     return render("public/resources.html", request, "/resources")
+
+
+@router.get("/service-area", response_class=HTMLResponse)
+async def service_area(request: Request):
+    return render("public/service_area.html", request, "/service-area")
 
 
 @router.get("/contact", response_class=HTMLResponse)
@@ -142,4 +151,21 @@ async def robots():
     return PlainTextResponse(
         "User-agent: *\nAllow: /\n"
         "Sitemap: https://seasonscareservices.com/sitemap.xml\n"
+    )
+
+
+SITEMAP_PATHS = ["/", "/services", "/credentials", "/story",
+                 "/service-area", "/contact"]
+
+
+def sitemap_xml() -> str:
+    urls = "".join(
+        "  <url><loc>%s%s</loc></url>\n" % (BASE_URL, "" if p == "/" else p)
+        for p in SITEMAP_PATHS
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + urls +
+        '</urlset>\n'
     )

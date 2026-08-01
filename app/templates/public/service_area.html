@@ -1,0 +1,53 @@
+{% extends "public/base.html" %}
+{% block title %}Service Area: Pocatello, Chubbuck &amp; Bannock County | {{ b.name }}{% endblock %}
+{% block description %}Seasons Care Services provides non-medical companion care in Pocatello, Chubbuck and the surrounding Bannock County area of southeastern Idaho.{% endblock %}
+
+{% block content %}
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Service area</p>
+    <h1>Where I work.</h1>
+    <p class="lead narrow" style="margin-top:1.5rem">I live in Pocatello, so this is a
+    genuinely local business. If you're nearby but not sure whether you're in the
+    area, call and ask. The answer is usually yes.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap grid2">
+    <div class="svc"><h3>Pocatello</h3>
+      <p style="color:var(--muted);font-size:0.98rem">Home base. Rides to medical and
+      dental appointments, grocery runs, meal preparation, light housekeeping,
+      companionship visits, and respite for family caregivers.</p></div>
+    <div class="svc"><h3>Chubbuck</h3>
+      <p style="color:var(--muted);font-size:0.98rem">The same services, minutes up
+      the road. Regular weekly visits are easy to schedule here.</p></div>
+    <div class="svc"><h3>Bannock County</h3>
+      <p style="color:var(--muted);font-size:0.98rem">The surrounding area is
+      generally workable, especially for regularly scheduled visits. Mileage is
+      billed at $0.725 a mile when driving is part of the visit.</p></div>
+    <div class="svc"><h3>Not sure?</h3>
+      <p style="color:var(--muted);font-size:0.98rem">Call or text
+      <a href="tel:{{ b.phone_href }}">{{ b.phone }}</a> and ask. If I can't help,
+      I'll try to point you to someone who can.</p></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <p class="eyebrow">Getting around</p>
+    <h2>Appointments are most of the driving.</h2>
+    <p style="margin-top:1.5rem">A lot of what I do is transportation: getting to the
+    doctor, the dentist, physical therapy, lab work, the pharmacy, the hair salon,
+    church, or the senior center. I don't just drop you at the door. I go in with you
+    if you'd like, wait through the appointment, take notes if that's helpful, and
+    get you home again.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+      <a class="btn btn-quiet" href="{{ p }}/contact">Send a message</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

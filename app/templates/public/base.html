@@ -6,7 +6,74 @@
 {% if draft %}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{% endif %}
 <title>{% block title %}{{ b.name }}{% endblock %}</title>
 <meta name="description" content="{% block description %}Non-medical companion care in Pocatello and Chubbuck, Idaho. Rides to appointments, errands, healthy meals, light housekeeping and good company.{% endblock %}">
-<link rel="stylesheet" href="/static/css/public.css?v=4">
+<link rel="stylesheet" href="/static/css/public.css?v=5">
+
+{% if not draft %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+
+<link rel="icon" href="/static/images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/static/images/favicon-48.png">
+<link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ b.name }}">
+<meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+<meta property="og:description" content="{{ self.description() }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:image" content="{{ base_url }}/static/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "{{ base_url }}/#business",
+  "name": "{{ b.name }}",
+  "legalName": "{{ b.legal }}",
+  "slogan": "{{ b.tagline }}",
+  "description": "Non-medical companion care in Pocatello and Chubbuck, Idaho. Companionship, light housekeeping, meal planning and preparation, errands, transportation to appointments, and respite for family caregivers.",
+  "url": "{{ base_url }}/",
+  "telephone": "+1-208-604-2139",
+  "email": "{{ b.email }}",
+  "image": "{{ base_url }}/static/images/og-image.jpg",
+  "logo": "{{ base_url }}/static/images/logo.png",
+  "priceRange": "$$",
+  "paymentAccepted": "Cash, Check, Venmo",
+  "currenciesAccepted": "USD",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Pocatello",
+    "addressRegion": "ID",
+    "addressCountry": "US"
+  },
+  "areaServed": [
+    { "@type": "City", "name": "Pocatello", "addressRegion": "ID" },
+    { "@type": "City", "name": "Chubbuck", "addressRegion": "ID" },
+    { "@type": "AdministrativeArea", "name": "Bannock County, Idaho" }
+  ],
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "opens": "08:00",
+    "closes": "18:00"
+  }],
+  "founder": { "@type": "Person", "name": "{{ b.owner }}", "jobTitle": "Owner and Caregiver" },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Companion care services",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Companionship" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Light housekeeping" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Home management" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Meal planning and preparation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Transportation and accompaniment" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Errands and shopping" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Caregiver respite" } }
+    ]
+  }
+}
+</script>
 </head>
 <body>
 {% if draft %}<div class="draftbar">Draft preview &mdash; not visible to Google &mdash; nothing here is public yet</div>{% endif %}
@@ -43,6 +110,7 @@
     <div>
       <ul class="plain">
         {% for href, label in nav %}<li><a href="{{ p }}{{ href if href else '/' }}">{{ label }}</a></li>{% endfor %}
+        <li><a href="{{ p }}/service-area">Service Area</a></li>
       </ul>
     </div>
   </div>
