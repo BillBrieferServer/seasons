@@ -160,7 +160,7 @@ SITEMAP_PATHS = ["/", "/services", "/credentials", "/story",
 
 def sitemap_xml() -> str:
     urls = "".join(
-        "  <url><loc>%s%s</loc></url>\n" % (BASE_URL, "" if p == "/" else p)
+        "  <url><loc>%s%s</loc></url>\n" % (BASE_URL, p)
         for p in SITEMAP_PATHS
     )
     return (
