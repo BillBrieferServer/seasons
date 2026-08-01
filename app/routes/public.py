@@ -81,6 +81,16 @@ async def services(request: Request):
     return render("public/services.html", request, "/services")
 
 
+@router.get("/services/senior-transportation", response_class=HTMLResponse)
+async def service_transportation(request: Request):
+    return render("public/service_transportation.html", request, "/services")
+
+
+@router.get("/services/respite-care", response_class=HTMLResponse)
+async def service_respite(request: Request):
+    return render("public/service_respite.html", request, "/services")
+
+
 @router.get("/credentials", response_class=HTMLResponse)
 async def credentials(request: Request):
     return render("public/credentials.html", request, "/credentials")
@@ -161,7 +171,8 @@ async def robots():
     )
 
 
-SITEMAP_PATHS = ["/", "/services", "/credentials", "/story",
+SITEMAP_PATHS = ["/", "/services", "/services/senior-transportation",
+                 "/services/respite-care", "/credentials", "/story",
                  "/service-area", "/resources",
                  "/resources/aging-parent-refuses-help", "/contact"]
 

@@ -1,0 +1,85 @@
+{% extends "public/base.html" %}
+{% block title %}Senior Transportation in Pocatello: Rides to Appointments | {{ b.name }}{% endblock %}
+{% block description %}Scheduled rides to medical, dental and personal appointments for seniors in Pocatello and Chubbuck. I go in with you, wait through the appointment, and bring you home. $25/hour plus $0.725 a mile.{% endblock %}
+
+{% block content %}
+<section>
+  <div class="wrap grid2">
+    <div>
+      <p class="eyebrow">Senior transportation &middot; Pocatello &amp; Chubbuck</p>
+      <h1>Rides to appointments, with someone who stays.</h1>
+      <p class="lead" style="margin-top:1.5rem">A ride is the easy part. What actually
+      helps is having someone walk in with you, sit through the appointment, remember
+      what the doctor said, and get you home again.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+        <a class="btn btn-quiet" href="{{ p }}/contact">Ask a question</a>
+      </div>
+    </div>
+    <img class="photo" src="/static/images/julie-portrait.jpg"
+         alt="Julie Brown, owner and caregiver at Seasons Care Services">
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap narrow prose">
+    <h2>Where I take people</h2>
+    <ul>
+      <li>Doctor, dentist and specialist appointments</li>
+      <li>Lab work, imaging and physical therapy</li>
+      <li>Vision and hearing appointments, glasses and hearing aid fittings</li>
+      <li>Pharmacy trips and medication reviews</li>
+      <li>Hair salon, barber and personal appointments</li>
+      <li>Church, the senior center, and visits with friends</li>
+      <li>Grandchildren's events and family gatherings</li>
+    </ul>
+
+    <h2>What makes this different from a ride service</h2>
+    <p>A rideshare driver will leave you at the clinic door. That works fine when you
+    are forty. It works less well when the waiting room is confusing, the paperwork is
+    small, and you would rather not walk back out into a parking lot alone in January.</p>
+
+    <p>I go in with you if you would like. I wait through the appointment. If it helps,
+    I take notes, so there is a record of what was actually said rather than what
+    everyone half remembers afterward. Then I bring you home and see you inside.</p>
+
+    <p>For families out of town, that means somebody can tell you how the appointment
+    really went.</p>
+
+    <h2>Rides are scheduled in advance</h2>
+    <p class="note">This is not an on-call ride service. Appointments are arranged
+    ahead of time, usually as part of a regular weekly or biweekly visit, so I can
+    give you my full attention and you can count on me being there. If you need
+    same-day transportation, I am glad to point you toward other options.</p>
+
+    <h2>What it costs</h2>
+    <p>Transportation is billed like any other visit: <strong>$25 an hour</strong> with
+    a two-hour minimum, plus <strong>$0.725 a mile</strong> when driving is involved.
+    Time is counted from when I arrive at your home until I bring you back. Waiting
+    time during the appointment is included, not extra.</p>
+    <p><a href="{{ p }}/services#rates">See full rates &rarr;</a></p>
+
+    <h2>What this isn't</h2>
+    <p>I am a non-medical companion caregiver, not a medical transport service. I do
+    not provide wheelchair-lift vehicles, stretcher transport, or any kind of medical
+    care during the drive. If someone needs that level of support, they need a
+    licensed medical transport provider, and I will help you find one.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <p class="eyebrow">Getting started</p>
+    <h2>Tell me what's on the calendar.</h2>
+    <p style="margin-top:1.5rem">If there's an appointment coming up, or a standing one
+    every month that has become difficult to get to, call and we'll work out what makes
+    sense. The first conversation is free and there's no obligation.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+      <a class="btn btn-quiet" href="{{ p }}/services">See everything I do</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

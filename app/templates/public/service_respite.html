@@ -1,0 +1,86 @@
+{% extends "public/base.html" %}
+{% block title %}Respite Care in Pocatello: A Break for Family Caregivers | {{ b.name }}{% endblock %}
+{% block description %}Respite care in Pocatello and Chubbuck for families caring for an aging parent or spouse. Scheduled relief so you can rest, keep your own appointments, or go away for a few days.{% endblock %}
+
+{% block content %}
+<section>
+  <div class="wrap grid2">
+    <div>
+      <p class="eyebrow">Respite care &middot; Pocatello &amp; Chubbuck</p>
+      <h1>You need a break too.</h1>
+      <p class="lead" style="margin-top:1.5rem">If you're the one doing most of the
+      caring, this page is for you rather than for the person you care for.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+        <a class="btn btn-quiet" href="{{ p }}/contact">Ask a question</a>
+      </div>
+    </div>
+    <img class="photo" src="/static/images/julie-puzzle.jpg"
+         alt="Julie spending an afternoon with a client">
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap narrow prose">
+    <p>Most family caregivers I meet are not looking for a vacation. They're looking for
+    three hours to go to their own doctor, or an afternoon where nobody needs anything
+    from them, or one night away without lying awake wondering how it's going at home.</p>
+
+    <p>That's what respite is. Somebody reliable steps in so you can step out.</p>
+
+    <h2>What respite looks like</h2>
+    <ul>
+      <li><strong>Spouse relief.</strong> I stay with your husband or wife while you get
+      out of the house for a few hours.</li>
+      <li><strong>Relief for adult children.</strong> Cover while you work, travel, or
+      simply rest.</li>
+      <li><strong>Regular scheduled breaks.</strong> The same afternoon every week, so
+      it's something you can plan your life around.</li>
+      <li><strong>Occasional coverage.</strong> A one-off when something comes up.</li>
+    </ul>
+
+    <p>While I'm there it isn't just supervision. We'll do something worth doing: a
+    puzzle, a walk, lunch, sorting through photographs, or a proper meal cooked and put
+    in the refrigerator so dinner is handled when you get back.</p>
+
+    <h2>Why caregivers put this off</h2>
+    <p>Two reasons, usually. The first is guilt, and the second is the fear that a
+    stranger will unsettle the person they're caring for.</p>
+
+    <p>On the first: you can't pour from an empty cup, and the person you're caring for
+    would almost certainly not want your health to be the price of theirs.</p>
+
+    <p>On the second, that's a fair worry, and it's why the first visit is an
+    introduction rather than a handover. You're there. Nothing is sprung on anybody. If
+    it isn't a good fit, we stop, and there's no minimum term to work around.</p>
+
+    <h2>What I do and don't do</h2>
+    <p>I provide non-medical companion care. That means company, meals, light
+    housekeeping, errands and transportation. I don't administer medication, provide
+    nursing care, or help with bathing, dressing or toileting. If the person you're
+    caring for needs that level of support while you're away, they need a licensed home
+    health agency, and I'll tell you so plainly.</p>
+
+    <h2>What it costs</h2>
+    <p><strong>$25 an hour</strong>, two-hour minimum. No minimum term and no notice
+    period to stop.</p>
+    <p><a href="{{ p }}/services#rates">See full rates &rarr;</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <p class="eyebrow">Getting started</p>
+    <h2>Start with an afternoon.</h2>
+    <p style="margin-top:1.5rem">You don't have to commit to anything. Try one
+    afternoon and see how it goes for both of you. The first conversation is free and
+    there's no obligation at the end of it.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+      <a class="btn btn-quiet" href="{{ p }}/contact">Send a message</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
