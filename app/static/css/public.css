@@ -182,3 +182,9 @@ textarea { min-height: 7rem; resize: vertical; }
 @media (max-width: 52rem) { .footer-grid { grid-template-columns: 1fr; } }
 .site-footer .plain li { border-bottom: 0; padding: 0.2rem 0; }
 .legal { margin-top: 2.5rem; font-size: 0.82rem; color: var(--sage-dark); }
+
+/* ---------------------------------------------------------------- photos -- */
+.photo { width: 100%; height: auto; display: block; }
+.photo-wide { width: 100%; height: auto; display: block; }
+figure { margin: 0; }
+figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
