@@ -241,3 +241,20 @@ figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
 .prose th, .prose td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--gray-line); vertical-align: top; }
 .prose thead th { border-bottom: 2px solid var(--sage); }
 .prose tbody th { font-weight: 600; white-space: nowrap; }
+
+/* -------------------------------------------------------------- signature -- */
+/* Alex Brush (SIL Open Font License), subset to the characters used. */
+@font-face {
+  font-family: "Seasons Script";
+  src: url("/static/fonts/alexbrush-subset.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+.signature {
+  font-family: "Seasons Script", cursive;
+  font-size: clamp(2.1rem, 5vw, 2.9rem);
+  line-height: 1.1;
+  color: var(--sage);
+  margin: 2.2rem 0 0;
+}
