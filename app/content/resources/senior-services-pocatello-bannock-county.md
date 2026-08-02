@@ -8,7 +8,7 @@ order: 40
 status: published
 ---
 
-**Verified [MONTH YEAR].** Programs change and phone numbers move. If you find something out of date here, please tell me and I'll fix it.
+**Verified August 2026.** Programs change and phone numbers move. If you find something out of date here, please tell me and I'll fix it.
 
 There is more help available in this valley than most families realize. The problem isn't that the services don't exist. It's that you generally have to already know the name of the program to find it, which is a strange requirement to place on someone at the worst week of their year.
 
