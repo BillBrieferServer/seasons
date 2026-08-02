@@ -5,7 +5,7 @@ meta_title: "Senior Services in Pocatello & Bannock County: Who to Call | Season
 meta_description: "A plain directory of programs for older adults in Pocatello, Chubbuck and Bannock County: meals, transportation, Medicare help, veterans benefits, and who to call if someone isn't safe."
 summary: "A plain directory of the programs available to older adults in Pocatello, Chubbuck and the surrounding counties, organized by what you need rather than by which agency runs it."
 order: 40
-status: draft
+status: published
 ---
 
 **Verified [MONTH YEAR].** Programs change and phone numbers move. If you find something out of date here, please tell me and I'll fix it.
