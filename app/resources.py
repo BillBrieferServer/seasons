@@ -5,6 +5,7 @@ the title tag, the meta description and the index card. Files are re-read on
 each request, so adding an article means copying a file -- no code, no restart.
 """
 import os
+import re
 import frontmatter
 import markdown as md
 
@@ -55,3 +56,15 @@ def get(slug):
         if a["slug"] == slug:
             return a
     return None
+
+
+def apply_prefix(html, prefix):
+    """Rewrite site-internal hrefs so they work under the draft /preview prefix.
+    Leaves /static, absolute URLs, anchors, tel: and mailto: alone."""
+    if not prefix:
+        return html
+    return re.sub(
+        r'href="/(?!/|static/)',
+        'href="%s/' % prefix,
+        html,
+    )

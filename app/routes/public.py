@@ -119,6 +119,8 @@ async def resource_article(request: Request, slug: str):
     if not article:
         return RedirectResponse(url=PREFIX + "/resources", status_code=302)
     others = [a for a in resources.all_articles() if a["slug"] != slug][:3]
+    article = dict(article)
+    article["body_html"] = resources.apply_prefix(article["body_html"], PREFIX)
     return render("public/resource.html", request, "/resources",
                   article=article, others=others)
 
