@@ -220,3 +220,11 @@ figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
 .eyebrow a:hover { color: var(--rust); }
 .svc h3 a { color: var(--black); text-decoration: none; }
 .svc h3 a:hover { color: var(--rust); }
+
+/* headings that lead to a page of their own */
+.svc h3 a.more { display: inline-flex; align-items: baseline; gap: 0.45em; }
+.svc h3 a.more .arw {
+  color: var(--sage); font-weight: 400;
+  transition: transform 0.15s ease;
+}
+.svc h3 a.more:hover .arw { transform: translateX(3px); color: var(--rust); }
