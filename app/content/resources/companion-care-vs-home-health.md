@@ -67,6 +67,20 @@ So ask. Ask anyone you're considering, me included:
 
 Anyone who takes this work seriously will have ready answers and won't be bothered by the questions. Hesitation is information.
 
+> **For what it's worth, here are my answers.**
+>
+> **Are you insured, and can I see proof?** Yes. General liability coverage on the business, and I bring proof to the free consultation.
+>
+> **Has there been a background check, and when?** Yes, and I'll show you the documentation and the date.
+>
+> **What's your training or professional background?** CPR, AED and First Aid certified through the American Red Cross, and a certified health and wellness coach with eight years of experience.
+>
+> **What will you not do?** [Here's the full list](/services#what-i-dont-provide), in writing, before you ask.
+>
+> **Will I get documentation of visits?** Yes, on every visit.
+>
+> **What happens if you're sick or away?** I'll give you plenty of notice.
+
 ## They're not either/or
 
 The framing of "companion care versus home health" is a little misleading, because plenty of families need both, sometimes at the same time.
