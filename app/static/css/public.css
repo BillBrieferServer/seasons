@@ -257,4 +257,7 @@ figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
   line-height: 1.1;
   color: var(--sage);
   margin: 2.2rem 0 0;
+  text-align: center;
+  /* centred over the buttons above it, not the whole column */
+  max-width: 22rem;
 }
