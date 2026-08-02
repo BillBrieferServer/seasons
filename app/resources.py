@@ -27,7 +27,9 @@ def _one(path):
         "summary": meta.get("summary", ""),
         "order": int(meta.get("order", 100)),
         "status": meta.get("status", "published"),
-        "body_html": _MD.convert(post.content),
+        "body_html": _MD.convert(post.content)
+                     .replace("<table>", '<div class="tablewrap"><table>')
+                     .replace("</table>", "</table></div>"),
     }
 
 
