@@ -228,3 +228,9 @@ figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
   transition: transform 0.15s ease;
 }
 .svc h3 a.more:hover .arw { transform: translateX(3px); color: var(--rust); }
+
+.prose blockquote {
+  margin: 2rem 0; padding: 0.2rem 0 0.2rem 1.2rem;
+  border-left: 3px solid var(--sage); color: var(--muted);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }

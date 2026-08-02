@@ -1,0 +1,48 @@
+{% extends "public/base.html" %}
+{% block title %}{{ article.meta_title }}{% endblock %}
+{% block description %}{{ article.meta_description }}{% endblock %}
+
+{% block content %}
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><a href="{{ p }}/resources">Resources</a></p>
+    <h1 style="max-width:20ch">{{ article.title }}</h1>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap narrow prose">
+    {{ article.body_html|safe }}
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <p>If you're in Pocatello, Chubbuck, or anywhere in Bannock County and want to talk
+    through what companion care might look like for your family, I'm glad to have that
+    conversation. No pressure, no obligation.</p>
+    <p style="color:var(--sage-dark)">&mdash; Julie</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:{{ b.phone_href }}">Call or text {{ b.phone }}</a>
+      <a class="btn btn-quiet" href="{{ p }}/contact">Send a message</a>
+    </div>
+  </div>
+</section>
+
+{% if others %}
+<section class="tight">
+  <div class="wrap">
+    <p class="eyebrow">More like this</p>
+    <div class="grid3" style="margin-top:1.5rem">
+      {% for o in others %}
+      <div class="svc">
+        <h3><a href="{{ p }}/resources/{{ o.slug }}">{{ o.title }}</a></h3>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

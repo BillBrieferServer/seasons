@@ -11,6 +11,7 @@ from fastapi.templating import Jinja2Templates
 from pathlib import Path
 
 from app.database.db import get_db
+from app import resources
 from app.mailer import send_inquiry
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -102,8 +103,9 @@ async def story(request: Request):
 
 
 @router.get("/resources", response_class=HTMLResponse)
-async def resources(request: Request):
-    return render("public/resources.html", request, "/resources")
+async def resources_index(request: Request):
+    return render("public/resources.html", request, "/resources",
+                  articles=resources.all_articles())
 
 
 @router.get("/service-area", response_class=HTMLResponse)
@@ -111,9 +113,14 @@ async def service_area(request: Request):
     return render("public/service_area.html", request, "/service-area")
 
 
-@router.get("/resources/aging-parent-refuses-help", response_class=HTMLResponse)
-async def resource_parent_help(request: Request):
-    return render("public/resource_parent_help.html", request, "/resources")
+@router.get("/resources/{slug}", response_class=HTMLResponse)
+async def resource_article(request: Request, slug: str):
+    article = resources.get(slug)
+    if not article:
+        return RedirectResponse(url=PREFIX + "/resources", status_code=302)
+    others = [a for a in resources.all_articles() if a["slug"] != slug][:3]
+    return render("public/resource.html", request, "/resources",
+                  article=article, others=others)
 
 
 @router.get("/contact", response_class=HTMLResponse)
@@ -173,14 +180,16 @@ async def robots():
 
 SITEMAP_PATHS = ["/", "/services", "/services/senior-transportation",
                  "/services/respite-care", "/credentials", "/story",
-                 "/service-area", "/resources",
-                 "/resources/aging-parent-refuses-help", "/contact"]
+                 "/service-area", "/resources", "/contact"]
 
 
 def sitemap_xml() -> str:
+    paths = list(SITEMAP_PATHS)
+    for a in resources.all_articles():
+        paths.append("/resources/" + a["slug"])
     urls = "".join(
         "  <url><loc>%s%s</loc></url>\n" % (BASE_URL, p)
-        for p in SITEMAP_PATHS
+        for p in paths
     )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'

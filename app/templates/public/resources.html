@@ -17,12 +17,13 @@
 
 <section>
   <div class="wrap">
-    <div class="svc" style="max-width:38rem">
-      <h3><a href="{{ p }}/resources/aging-parent-refuses-help">When an Aging Parent
-      Says No to Help</a></h3>
-      <p style="color:var(--muted);font-size:0.98rem">You can see that your mom or dad
-      needs help. They've told you they're fine. Why that happens, what to say instead,
-      when to wait, and when waiting isn't the answer.</p>
+    <div class="grid2">
+      {% for a in articles %}
+      <div class="svc">
+        <h3><a href="{{ p }}/resources/{{ a.slug }}">{{ a.title }}</a></h3>
+        {% if a.summary %}<p style="color:var(--muted);font-size:0.98rem">{{ a.summary }}</p>{% endif %}
+      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
