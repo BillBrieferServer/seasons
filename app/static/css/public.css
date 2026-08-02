@@ -256,8 +256,6 @@ figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
   font-size: clamp(2.5rem, 6vw, 3.5rem);
   line-height: 1.1;
   color: var(--sage);
-  margin: 3.2rem 0 0 2.5rem;
-  text-align: center;
-  /* centred over the buttons above it, not the whole column */
-  max-width: 22rem;
+  /* sits between the paragraph and the buttons, so it lines up with them */
+  margin: 2.4rem 0 0.4rem;
 }
