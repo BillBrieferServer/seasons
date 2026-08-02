@@ -21,7 +21,11 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* keep anchor targets clear of the sticky header */
+  scroll-padding-top: 8rem;
+}
 
 body {
   margin: 0;
@@ -60,7 +64,17 @@ p:last-child { margin-bottom: 0; }
 }
 
 /* --------------------------------------------------------------- header -- */
-.site-header { border-bottom: 1px solid var(--gray-line); background: var(--white); }
+.site-header {
+  border-bottom: 1px solid var(--gray-line);
+  background: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+/* the header is tall once it stacks, so don't eat a phone screen with it */
+@media (max-width: 60rem) {
+  .site-header { position: static; }
+}
 .header-inner {
   display: flex; align-items: center; justify-content: space-between;
   gap: 1.5rem; padding-top: 1.1rem; padding-bottom: 1.1rem;
