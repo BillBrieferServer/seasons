@@ -35,7 +35,7 @@ app.include_router(clients_router)
 app.include_router(admin_router)
 
 PUBLIC_PATHS = {"/login", "/setup-pin", "/pin", "/health", "/static",
-                "/robots.txt", "/sitemap.xml"}
+                "/robots.txt", "/sitemap.xml", "/preview"}
 if PUBLIC_PREFIX:
     PUBLIC_PATHS.add(PUBLIC_PREFIX)
 else:
@@ -47,6 +47,9 @@ else:
 @app.middleware("http")
 async def auth_middleware(request: Request, call_next):
     path = request.url.path
+    # live mode: the front door is the public home page (exact match only)
+    if path == "/" and not PUBLIC_PREFIX:
+        return await call_next(request)
     # Allow public paths
     if any(path.startswith(p) for p in PUBLIC_PATHS):
         return await call_next(request)
@@ -70,6 +73,12 @@ async def startup():
 @app.get("/")
 async def home():
     return RedirectResponse(url="/recipes", status_code=302)
+
+
+@app.get("/preview{rest:path}", include_in_schema=False)
+async def preview_redirect(rest: str):
+    """Live mode: old /preview links (Julie's bookmarks) go to the real page."""
+    return RedirectResponse(url=rest or "/", status_code=301)
 
 
 @app.get("/health")

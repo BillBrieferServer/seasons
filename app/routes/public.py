@@ -72,7 +72,7 @@ def render(name: str, request: Request, page: str, **extra):
     return resp
 
 
-@router.get("", response_class=HTMLResponse)
+@router.get("" if DRAFT else "/", response_class=HTMLResponse)
 async def home(request: Request):
     return render("public/home.html", request, "")
 
