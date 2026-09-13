@@ -35,7 +35,7 @@ app.include_router(clients_router)
 app.include_router(admin_router)
 
 PUBLIC_PATHS = {"/login", "/setup-pin", "/pin", "/health", "/static",
-                "/robots.txt", "/sitemap.xml", "/preview"}
+                "/robots.txt", "/sitemap.xml", "/preview", "/favicon.ico"}
 if PUBLIC_PREFIX:
     PUBLIC_PATHS.add(PUBLIC_PREFIX)
 else:
@@ -79,6 +79,13 @@ async def home():
 async def preview_redirect(rest: str):
     """Live mode: old /preview links (Julie's bookmarks) go to the real page."""
     return RedirectResponse(url=rest or "/", status_code=301)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon_root():
+    """Browsers and Google also look for the icon at the domain root."""
+    from fastapi.responses import FileResponse
+    return FileResponse(str(STATIC_DIR / "images" / "favicon.ico"), media_type="image/x-icon")
 
 
 @app.get("/health")
