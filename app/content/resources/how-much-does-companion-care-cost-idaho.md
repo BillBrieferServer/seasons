@@ -77,7 +77,7 @@ The honest answer is that most companion care is paid for privately, by the fami
 
 **Long-term care insurance often does.** If your parent bought a policy years ago, pull it out. Many cover "homemaker" or "companion" services once the person needs help with a certain number of daily activities. Call the insurer and ask exactly what documentation they want.
 
-**Idaho Medicaid** may cover personal care services for people who qualify financially, through providers enrolled with the state. I'm not one of them. That's its own program with its own application, and the Idaho Department of Health and Welfare is where it starts.
+**Idaho Medicaid** may cover personal care services for people who qualify financially, through providers enrolled with the state. That's its own program with its own application, and the Idaho Department of Health and Welfare is where it starts.
 
 **Veterans and surviving spouses** may qualify for VA benefits that help pay for care at home. One benefit worth asking about is the Aid and Attendance pension add-on, which is paid to the veteran rather than to a provider. It's worth a call to the Bannock County Veteran Services office. [The local directory has the number](/resources/senior-services-pocatello-bannock-county).
 
