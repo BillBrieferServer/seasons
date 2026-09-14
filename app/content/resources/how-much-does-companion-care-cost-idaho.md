@@ -63,6 +63,7 @@ A few things move the number, at any provider:
 
 - **Minimum visit length.** This is the big one. A $28 rate with a 4 hour minimum costs more per visit than a $30 rate with a 2 hour minimum.
 - **Hands-on care.** Bathing, toileting, and transfers cost more and require a different kind of caregiver. I don't provide them, and I'll tell you if your parent needs someone who does.
+- **Respite is priced the same.** If you're the family caregiver and what you need is a standing block of hours so you can get a break, [respite care](/services/respite-care) is billed exactly like any other visit. No special rate.
 - **Nights, weekends, and holidays.** Many agencies add a surcharge. I don't, but my hours are weekdays 8 to 6, so if you need overnight or weekend coverage you'll be looking at an agency.
 - **Agency versus one person.** An agency's rate covers their office, their scheduler, and backup coverage when a caregiver calls in. That's genuinely worth something if you need many hours a week or round-the-clock care. What you give up is consistency. You may see a different caregiver each week.
 
@@ -82,6 +83,6 @@ The honest answer is that most companion care is paid for privately, by the fami
 
 When someone asks what it costs, what they usually mean is: "Is this going to work, or am I going to have to move Dad?"
 
-I can't answer that without knowing Dad. But I can tell you that a few hours a week of the right help, started early, is the cheapest thing on this whole page. It's the crisis that gets expensive.
+I can't answer that without knowing Dad. If you're not even sure it's time yet, [here's what I'd actually look at](/resources/how-to-know-when-a-parent-needs-help). But I can tell you that a few hours a week of the right help, started early, is the cheapest thing on this whole page. It's the crisis that gets expensive.
 
 If you want to talk it through, [call or text me](/contact). The conversation is free, and I'll tell you plainly whether I'm the right fit or whether you need something I don't offer.

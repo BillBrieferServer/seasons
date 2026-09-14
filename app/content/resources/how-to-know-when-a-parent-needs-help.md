@@ -82,4 +82,6 @@ Take the list, and pick one thing. The one that would take the most weight off. 
 
 If you've already tried and gotten a firm no, that's common, and it's its own subject. I've written separately about [what to do when an aging parent says no to help](/resources/aging-parent-refuses-help).
 
+If you're doing all of this from out of town, [here's how to build a system that works from a distance](/resources/long-distance-caregiving-system). And if the next question is what help actually costs, [the real numbers are here](/resources/how-much-does-companion-care-cost-idaho).
+
 And if you're reading this from Boise, or Seattle, or anywhere that isn't down the street, know that noticing from a distance is harder and you're not failing at it. Visits are snapshots. Give yourself permission to trust what you saw in the snapshot.

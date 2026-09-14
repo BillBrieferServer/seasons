@@ -70,7 +70,7 @@ A few things I've learned about timing:
 
 This is the part most articles skip, and I think that's a disservice.
 
-An adult who is capable of making their own decisions has the right to make choices you disagree with, including the choice to accept more risk than you'd like. That is genuinely hard. It may be the hardest part of this whole thing. But pushing past it, going around them or arranging things without telling them, usually costs you the trust you'll need later, when the stakes are higher.
+An adult who is capable of making their own decisions has the right to make choices you disagree with, including the choice to accept more risk than you'd like. That is genuinely hard. It may be the hardest part of this whole thing. But pushing past it, going around them or arranging things without telling them, usually costs you the trust you'll need later, when the stakes are higher. If you're trying to work out whether things have crossed from "could use help" to "not safe," [here's what I'd actually look at](/resources/how-to-know-when-a-parent-needs-help).
 
 Sometimes the honest answer is that you keep the door open, you visit, you stay close, and you wait for the moment they're ready. Often that moment comes. It's frequently something small that opens it: a winter they didn't enjoy, a friend who hired someone and liked it.
 
@@ -81,3 +81,5 @@ Sometimes the honest answer is that you keep the door open, you visit, you stay 
 If you've been going in circles on this for months, I want you to hear that it doesn't mean you've handled it badly. These conversations are hard because the love in them is complicated. You're trying to protect someone who spent their life protecting you, and the roles don't reverse cleanly.
 
 I've sat at kitchen tables in Pocatello where the first visit happened only because somebody finally said "just try it for a month." That's usually all it takes. Not a decision about the future. A month.
+
+And if you're the one carrying all of this in the meantime, [watch yourself for burnout too](/resources/caregiver-burnout-signs). It sneaks up on the person doing the most.

@@ -16,7 +16,7 @@ So let's start there.
 
 ## Why it gets harder
 
-**Appetite genuinely declines.** Hunger signals get quieter with age. Someone who spent sixty years eating when they were hungry may now go most of a day without a hunger cue arriving at all.
+**Appetite genuinely declines.** Hunger signals get quieter with age. Someone who spent sixty years eating when they were hungry may now go most of a day without a hunger cue arriving at all. If the drop is sudden or steep rather than gradual, that's a different problem, and [I've written about it separately](/resources/appetite-loss-after-75).
 
 **Taste and smell change.** Food can start tasting flat or slightly wrong. This is common, it has a range of causes including medications, and it makes eating feel like a chore rather than a pleasure.
 

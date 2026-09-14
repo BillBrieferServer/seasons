@@ -60,7 +60,7 @@ So the real answer is unglamorous: **you need someone else to actually be there,
 
 The Area Agency on Aging administers respite services and can tell you what you may qualify for. There can be waiting periods, so ask early rather than at the point of crisis. [Contact details are in the local services directory](/resources/senior-services-pocatello-bannock-county).
 
-**Ask specifically.** "Let me know if you need anything" produces nothing, because it puts the work of identifying and requesting onto the person with no capacity left. Ask for exact things instead: *Can you take Dad to his Thursday appointment?* *Can you handle the insurance calls this month?* Specific requests get said yes to at a much higher rate than general ones.
+**Ask specifically.** "Let me know if you need anything" produces nothing, because it puts the work of identifying and requesting onto the person with no capacity left. Ask for exact things instead: *Can you take Dad to his Thursday appointment?* *Can you handle the insurance calls this month?* Specific requests get said yes to at a much higher rate than general ones. If the rest of the family is out of town, [there's a way to divide this up that actually holds](/resources/long-distance-caregiving-system).
 
 **Let other people do it imperfectly.** Your brother will fold the laundry wrong. Someone else will make lunch differently. If you require that everything be done to your standard, you've guaranteed you'll do all of it, and the standard is not what's keeping your mother well. Presence is.
 

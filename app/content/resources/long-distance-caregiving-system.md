@@ -117,6 +117,6 @@ You moved away because you built a life. That was allowed. Building good coverag
 
 ## Where I fit
 
-Eyes on the ground is a lot of what I do. Regular visits, meals in the freezer, [driving to appointments](/services/senior-transportation), and a record of every visit so you know how things actually went rather than how they sounded on Sunday.
+Eyes on the ground is a lot of what I do. Regular visits, meals in the freezer, [driving to appointments](/services/senior-transportation), and a record of every visit so you know how things actually went rather than how they sounded on Sunday. [What that costs is spelled out plainly here](/resources/how-much-does-companion-care-cost-idaho). For the rest of the system, the Area Agency on Aging, the senior center, transit, [the local directory has the numbers](/resources/senior-services-pocatello-bannock-county).
 
 If your parent is in Pocatello, Chubbuck or Bannock County and you aren't, that's a conversation worth having.

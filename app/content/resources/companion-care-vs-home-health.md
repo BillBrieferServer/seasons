@@ -46,7 +46,7 @@ This is where most of the confusion lives, and it's worth being direct about.
 
 **Medicare does not cover companion care.** Not the errands, not the meals, not the driving, not the housekeeping, not the company. If someone only needs help with daily living and doesn't need skilled care, Medicare doesn't pay for it. I'd rather tell you plainly than have you find out after you've made plans.
 
-Companion care is most often paid privately. Some families use long-term care insurance policies, which frequently do cover this kind of help. The trick is that policy language and documentation requirements vary a lot, so it's worth calling the insurer and asking exactly what they need to see. Veterans and surviving spouses may qualify for benefits that help as well, which is worth looking into separately.
+Companion care is most often paid privately. ([What that actually costs in Idaho, with real numbers, is here](/resources/how-much-does-companion-care-cost-idaho).) Some families use long-term care insurance policies, which frequently do cover this kind of help. The trick is that policy language and documentation requirements vary a lot, so it's worth calling the insurer and asking exactly what they need to see. Veterans and surviving spouses may qualify for benefits that help as well, which is worth looking into separately.
 
 **Idaho Medicaid** covers personal care services for people who qualify financially, delivered through providers enrolled with the state. That's a different pathway than private-pay companion care, with its own eligibility process, and the place to start is the Idaho Department of Health and Welfare.
 
