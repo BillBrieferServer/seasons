@@ -71,13 +71,15 @@ A few things move the number, at any provider:
 
 The honest answer is that most companion care is paid for privately, by the family or the senior. But not all of it.
 
+**I'm private pay only.** I'm not enrolled as a Medicaid provider or with the VA, so those programs can't pay me directly. I list them because they may pay for other help, or free up money for this kind of help.
+
 **Medicare does not pay for companion care.** Not the rides, not the meals, not the housekeeping. It covers skilled home health ordered by a doctor, which is a different thing.
 
 **Long-term care insurance often does.** If your parent bought a policy years ago, pull it out. Many cover "homemaker" or "companion" services once the person needs help with a certain number of daily activities. Call the insurer and ask exactly what documentation they want.
 
-**Idaho Medicaid** covers personal care services for people who qualify financially, through providers enrolled with the state. That's its own program with its own application, and the Idaho Department of Health and Welfare is where it starts.
+**Idaho Medicaid** covers personal care services for people who qualify financially, through providers enrolled with the state. I'm not one of them. That's its own program with its own application, and the Idaho Department of Health and Welfare is where it starts.
 
-**Veterans and surviving spouses** may qualify for a VA pension add-on called Aid and Attendance, which can be used toward in-home help. It's worth a call to the Bannock County Veteran Services office. [The local directory has the number](/resources/senior-services-pocatello-bannock-county).
+**Veterans and surviving spouses** may qualify for a VA pension add-on called Aid and Attendance, which is paid to the veteran and can be put toward in-home help from anyone, me included. It's worth a call to the Bannock County Veteran Services office. [The local directory has the number](/resources/senior-services-pocatello-bannock-county).
 
 ## The question behind the question
 
