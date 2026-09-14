@@ -22,11 +22,8 @@ So here are the numbers, mine included.
 
 **Hands-on personal care costs more.** If your parent needs help with bathing, dressing, or getting in and out of a chair, that's personal care, not companion care. Idaho's median for that is about $34 an hour and climbs from there. [Here's the difference between the two](/resources/companion-care-vs-home-health), because it matters for both the price and the kind of help you're actually getting.
 
-**Independent caregivers on sites like Care.com charge $18 to $21 an hour** in Pocatello. That's the cheapest option, and sometimes it's the right one. But you're hiring an individual, not a business. Most aren't insured, many haven't been background checked, and if they get sick on Tuesday there's no one else coming.
-
 | | Typical hourly rate | Minimum visit |
 |---|---|---|
-| Independent caregiver (Care.com and similar) | $18 to $21 | Varies |
 | **Seasons Care Services** | **$30** | **2 hours** |
 | Idaho median, companion care | $31 to $32 | Varies |
 | Pocatello-area agencies | $31 to $36 | Usually 3 to 4 hours |
