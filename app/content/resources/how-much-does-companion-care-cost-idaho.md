@@ -79,7 +79,7 @@ The honest answer is that most companion care is paid for privately, by the fami
 
 **Idaho Medicaid** may cover personal care services for people who qualify financially, through providers enrolled with the state. I'm not one of them. That's its own program with its own application, and the Idaho Department of Health and Welfare is where it starts.
 
-**Veterans and surviving spouses** may qualify for VA benefits that help pay for care at home. I'm not currently enrolled as a VA provider, so I can't bill the VA directly. One benefit worth asking about is the Aid and Attendance pension add-on, which is paid to the veteran rather than to a provider. It's worth a call to the Bannock County Veteran Services office. [The local directory has the number](/resources/senior-services-pocatello-bannock-county).
+**Veterans and surviving spouses** may qualify for VA benefits that help pay for care at home. One benefit worth asking about is the Aid and Attendance pension add-on, which is paid to the veteran rather than to a provider. It's worth a call to the Bannock County Veteran Services office. [The local directory has the number](/resources/senior-services-pocatello-bannock-county).
 
 ## The question behind the question
 
