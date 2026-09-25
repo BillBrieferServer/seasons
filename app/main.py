@@ -44,8 +44,28 @@ else:
                          "/resources", "/service-area", "/contact"})
 
 
+# Login pages + everything behind the gate (recipes, plans, shopping,
+# clients, admin, and any future back office) tell search engines to stay out.
+AUTH_PAGES = ("/login", "/setup-pin", "/pin")
+
+
+def is_back_office(path: str) -> bool:
+    if path == "/" and not PUBLIC_PREFIX:
+        return False
+    if any(path.startswith(p) for p in AUTH_PAGES):
+        return True
+    return not any(path.startswith(p) for p in PUBLIC_PATHS)
+
+
 @app.middleware("http")
 async def auth_middleware(request: Request, call_next):
+    resp = await gate(request, call_next)
+    if is_back_office(request.url.path):
+        resp.headers["X-Robots-Tag"] = "noindex, nofollow"
+    return resp
+
+
+async def gate(request: Request, call_next):
     path = request.url.path
     # live mode: the front door is the public home page (exact match only)
     if path == "/" and not PUBLIC_PREFIX:
