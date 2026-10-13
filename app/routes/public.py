@@ -4,7 +4,10 @@ DRAFT MODE: while PUBLIC_DRAFT is true the site lives under PUBLIC_PREFIX
 (/preview), carries noindex headers + meta tags, and robots.txt disallows
 everything. Going live = set PUBLIC_DRAFT=0 in the environment.
 """
+import hashlib
+import hmac
 import os
+import time
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -23,6 +26,38 @@ DRAFT = os.environ.get("PUBLIC_DRAFT", "1") == "1"
 PREFIX = "/preview" if DRAFT else ""
 
 router = APIRouter(prefix=PREFIX, tags=["public"])
+
+# Contact-form bot check. The page carries a signed timestamp ("ts"); a small
+# script copies it, reversed, into "chk". Bots that don't run JavaScript leave
+# chk wrong, and bots that fill the form in under MIN_FILL_SECONDS are too fast.
+# Failures are stored with status 'spam' and not emailed -- nothing is lost.
+_FORM_KEY = (os.environ.get("SESSION_SECRET") or "seasons-form-key").encode()
+MIN_FILL_SECONDS = 3
+MAX_FORM_AGE = 2 * 24 * 3600
+
+
+def _sign(stamp: str) -> str:
+    return hmac.new(_FORM_KEY, stamp.encode(), hashlib.sha256).hexdigest()[:16]
+
+
+def form_token() -> str:
+    stamp = str(int(time.time()))
+    return stamp + "." + _sign(stamp)
+
+
+def spam_reason(ts: str, chk: str) -> str:
+    """Return '' when the submission looks human, else a short reason."""
+    stamp, _, sig = ts.partition(".")
+    if not stamp.isdigit() or not hmac.compare_digest(sig, _sign(stamp)):
+        return "bad-token"
+    if chk != ts[::-1]:
+        return "no-js"
+    age = time.time() - int(stamp)
+    if age < MIN_FILL_SECONDS:
+        return "too-fast"
+    if age > MAX_FORM_AGE:
+        return "stale"
+    return ""
 
 BUSINESS = {
     "name": "Seasons Care Services",
@@ -127,7 +162,8 @@ async def resource_article(request: Request, slug: str):
 
 @router.get("/contact", response_class=HTMLResponse)
 async def contact(request: Request):
-    return render("public/contact.html", request, "/contact", sent=False)
+    return render("public/contact.html", request, "/contact", sent=False,
+                  form_ts=form_token())
 
 
 @router.post("/contact", response_class=HTMLResponse)
@@ -140,6 +176,8 @@ async def contact_post(
     message: str = Form(""),
     best_time: str = Form(""),
     website: str = Form(""),
+    ts: str = Form(""),
+    chk: str = Form(""),
 ):
     # "website" is a honeypot -- real people leave it empty.
     if website.strip():
@@ -154,19 +192,23 @@ async def contact_post(
         "best_time": best_time.strip(),
     }
 
+    reason = spam_reason(ts.strip(), chk.strip())
+
     # Store first -- the database is the system of record, email is a convenience.
     conn = get_db()
     conn.execute(
         """INSERT INTO contact_submissions
-           (name, phone, email, care_for, message, best_time)
-           VALUES (?, ?, ?, ?, ?, ?)""",
+           (name, phone, email, care_for, message, best_time, status)
+           VALUES (?, ?, ?, ?, ?, ?, ?)""",
         (row["name"], row["phone"], row["email"],
-         row["care_for"], row["message"], row["best_time"]),
+         row["care_for"], row["message"], row["best_time"],
+         "spam:" + reason if reason else "new"),
     )
     conn.commit()
     conn.close()
 
-    send_inquiry(row)
+    if not reason:
+        send_inquiry(row)
     return RedirectResponse(url=PREFIX + "/contact?sent=1", status_code=303)
 
 

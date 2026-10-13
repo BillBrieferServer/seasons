@@ -65,6 +65,9 @@
             <input type="text" id="best_time" name="best_time" placeholder="Mornings, weekday afternoons...">
           </div>
           <div class="hp"><label for="website">Website</label><input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></div>
+          <input type="hidden" name="ts" id="f_ts" value="{{ form_ts }}">
+          <input type="hidden" name="chk" id="f_chk" value="">
+          <script>document.getElementById('f_chk').value=document.getElementById('f_ts').value.split('').reverse().join('');</script>
           <button type="submit" class="btn btn-primary" style="border:0;cursor:pointer;font:inherit;font-size:1rem">Send message</button>
         </form>
       {% endif %}
