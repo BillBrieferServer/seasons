@@ -121,7 +121,7 @@ def clear_failed_attempts(ip: str):
 async def login_page(request: Request):
     user = get_current_user(request)
     if user and user["is_setup"]:
-        return RedirectResponse(url="/", status_code=302)
+        return RedirectResponse(url="/recipes", status_code=302)
     conn = get_db()
     setup_count = conn.execute("SELECT COUNT(*) as c FROM users WHERE is_setup = 1").fetchone()["c"]
     conn.close()
@@ -238,7 +238,7 @@ async def setup_pin(request: Request, email: str = Form(...), pin: str = Form(..
     conn.close()
 
     token = create_session_token(user["id"])
-    response = RedirectResponse(url="/", status_code=302)
+    response = RedirectResponse(url="/recipes", status_code=302)
     response.set_cookie("session", token, max_age=30*24*3600, httponly=True, samesite="lax", secure=True)
     return response
 
@@ -277,7 +277,7 @@ async def pin_submit(request: Request, pin: str = Form(...),
 
     clear_failed_attempts(ip)
     token = create_session_token(user["id"])
-    response = RedirectResponse(url="/", status_code=302)
+    response = RedirectResponse(url="/recipes", status_code=302)
     response.set_cookie("session", token, max_age=30*24*3600, httponly=True, samesite="lax", secure=True)
     return response
 
